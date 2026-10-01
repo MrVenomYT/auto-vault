@@ -10,6 +10,48 @@ const regionMapCache = {
   regionMapUpdated: Date.now(),
 }
 
+const FALLBACK_REGIONS: Region[] = [
+  {
+    id: "reg_default_us",
+    name: "North America",
+    currency_code: "usd",
+    tax_rate: 0,
+    tax_rates: [],
+    tax_code: "standard",
+    countries: [
+      { id: 1, iso_2: "us", iso_3: "usa", num_code: 840, name: "UNITED STATES", display_name: "United States", region_id: "reg_default_us" },
+      { id: 2, iso_2: "ca", iso_3: "can", num_code: 124, name: "CANADA", display_name: "Canada", region_id: "reg_default_us" },
+    ],
+    payment_providers: [{ id: "stripe", is_installed: true }],
+    fulfillment_providers: [{ id: "manual", is_installed: true }],
+    includes_tax: false,
+    created_at: new Date().toISOString(),
+    updated_at: new Date().toISOString(),
+    deleted_at: null,
+    metadata: null,
+  } as unknown as Region,
+  {
+    id: "reg_default_eu",
+    name: "Europe",
+    currency_code: "eur",
+    tax_rate: 20,
+    tax_rates: [],
+    tax_code: "standard",
+    countries: [
+      { id: 3, iso_2: "de", iso_3: "deu", num_code: 276, name: "GERMANY", display_name: "Germany", region_id: "reg_default_eu" },
+      { id: 4, iso_2: "fr", iso_3: "fra", num_code: 250, name: "FRANCE", display_name: "France", region_id: "reg_default_eu" },
+      { id: 5, iso_2: "gb", iso_3: "gbr", num_code: 826, name: "UNITED KINGDOM", display_name: "United Kingdom", region_id: "reg_default_eu" },
+    ],
+    payment_providers: [{ id: "stripe", is_installed: true }],
+    fulfillment_providers: [{ id: "manual", is_installed: true }],
+    includes_tax: true,
+    created_at: new Date().toISOString(),
+    updated_at: new Date().toISOString(),
+    deleted_at: null,
+    metadata: null,
+  } as unknown as Region,
+]
+
 async function getRegionMap() {
   const { regionMap, regionMapUpdated } = regionMapCache
 
@@ -17,16 +59,27 @@ async function getRegionMap() {
     !regionMap.keys().next().value ||
     regionMapUpdated < Date.now() - 3600 * 1000
   ) {
-    // Fetch regions from Medusa. We can't use the JS client here because middleware is running on Edge and the client needs a Node environment.
-    const { regions } = await fetch(`${BACKEND_URL}/store/regions`, {
-      next: {
-        revalidate: 3600,
-        tags: ["regions"],
-      },
-    }).then((res) => res.json())
+    let regions: Region[] | null = null
 
-    if (!regions) {
-      notFound()
+    if (BACKEND_URL) {
+      try {
+        const res = await fetch(`${BACKEND_URL}/store/regions`, {
+          next: {
+            revalidate: 3600,
+            tags: ["regions"],
+          },
+        })
+        if (res.ok) {
+          const data = await res.json()
+          regions = data.regions
+        }
+      } catch (err) {
+        console.warn("Middleware: Failed to fetch regions from backend, using fallback regions.")
+      }
+    }
+
+    if (!regions || !regions.length) {
+      regions = FALLBACK_REGIONS
     }
 
     // Create a map of country codes to regions.
@@ -138,5 +191,5 @@ export async function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/((?!api|_next/static|favicon.ico).*)"],
+  matcher: ["/((?!api|_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)"],
 }

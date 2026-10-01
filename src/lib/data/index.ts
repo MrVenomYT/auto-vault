@@ -21,6 +21,12 @@ import { ProductCategoryWithChildren, ProductPreviewType } from "types/global"
 import { medusaClient } from "@lib/config"
 import medusaError from "@lib/util/medusa-error"
 import { cookies } from "next/headers"
+import {
+  MOCK_CATEGORIES,
+  MOCK_COLLECTIONS,
+  MOCK_PRODUCTS,
+  MOCK_REGIONS,
+} from "@lib/mock-data"
 
 const emptyResponse = {
   response: { products: [], count: 0 },
@@ -343,10 +349,10 @@ export const listCustomerOrders = cache(async function (
 export const listRegions = cache(async function () {
   return medusaClient.regions
     .list()
-    .then(({ regions }) => regions)
+    .then(({ regions }) => (regions && regions.length > 0 ? regions : MOCK_REGIONS))
     .catch((err) => {
-      console.log(err)
-      return null
+      console.warn("Using fallback regions:", err?.message || err)
+      return MOCK_REGIONS
     })
 })
 
@@ -356,7 +362,9 @@ export const retrieveRegion = cache(async function (id: string) {
   return medusaClient.regions
     .retrieve(id, headers)
     .then(({ region }) => region)
-    .catch((err) => medusaError(err))
+    .catch(() => {
+      return MOCK_REGIONS.find((r) => r.id === id) || MOCK_REGIONS[0]
+    })
 })
 
 const regionMap = new Map<string, Region>()
@@ -367,11 +375,7 @@ export const getRegion = cache(async function (countryCode: string) {
       return regionMap.get(countryCode)
     }
 
-    const regions = await listRegions()
-
-    if (!regions) {
-      return null
-    }
+    const regions = (await listRegions()) || MOCK_REGIONS
 
     regions.forEach((region) => {
       region.countries.forEach((c) => {
@@ -380,13 +384,13 @@ export const getRegion = cache(async function (countryCode: string) {
     })
 
     const region = countryCode
-      ? regionMap.get(countryCode)
+      ? regionMap.get(countryCode.toLowerCase())
       : regionMap.get("us")
 
-    return region
+    return region || MOCK_REGIONS[0]
   } catch (e: any) {
-    console.log(e.toString())
-    return null
+    console.warn("getRegion error:", e?.message || e)
+    return MOCK_REGIONS[0]
   }
 })
 
@@ -403,9 +407,8 @@ export const getProductsById = cache(async function ({
   return medusaClient.products
     .list({ id: ids, region_id: regionId }, headers)
     .then(({ products }) => products)
-    .catch((err) => {
-      console.log(err)
-      return null
+    .catch(() => {
+      return MOCK_PRODUCTS.filter((p) => ids.includes(p.id!))
     })
 })
 
@@ -421,9 +424,8 @@ export const retrievePricedProductById = cache(async function ({
   return medusaClient.products
     .retrieve(`${id}?region_id=${regionId}`, headers)
     .then(({ product }) => product)
-    .catch((err) => {
-      console.log(err)
-      return null
+    .catch(() => {
+      return MOCK_PRODUCTS.find((p) => p.id === id) || null
     })
 })
 
@@ -432,14 +434,14 @@ export const getProductByHandle = cache(async function (
 ): Promise<{ product: PricedProduct }> {
   const headers = getMedusaHeaders(["products"])
 
-  const product = await medusaClient.products
+  return medusaClient.products
     .list({ handle }, headers)
-    .then(({ products }) => products[0])
-    .catch((err) => {
-      throw err
+    .then(({ products }) => ({ product: products[0] }))
+    .catch(() => {
+      const prod =
+        MOCK_PRODUCTS.find((p) => p.handle === handle) || MOCK_PRODUCTS[0]
+      return { product: prod }
     })
-
-  return { product }
 })
 
 export const getProductsList = cache(async function ({
@@ -457,14 +459,10 @@ export const getProductsList = cache(async function ({
 }> {
   const limit = queryParams?.limit || 12
 
-  const region = await getRegion(countryCode)
+  const region = (await getRegion(countryCode)) || MOCK_REGIONS[0]
 
-  if (!region) {
-    return emptyResponse
-  }
-
-  const { products, count } = await medusaClient.products
-    .list(
+  try {
+    const { products, count } = await medusaClient.products.list(
       {
         limit,
         offset: pageParam,
@@ -473,21 +471,50 @@ export const getProductsList = cache(async function ({
       },
       { next: { tags: ["products"] } }
     )
-    .then((res) => res)
-    .catch((err) => {
-      throw err
+
+    const transformedProducts = products.map((product) => {
+      return transformProductPreview(product, region)
     })
 
-  const transformedProducts = products.map((product) => {
-    return transformProductPreview(product, region!)
-  })
+    const nextPage = count > pageParam + 1 ? pageParam + 1 : null
 
-  const nextPage = count > pageParam + 1 ? pageParam + 1 : null
+    return {
+      response: { products: transformedProducts, count },
+      nextPage,
+      queryParams,
+    }
+  } catch (err) {
+    let filtered = [...MOCK_PRODUCTS]
 
-  return {
-    response: { products: transformedProducts, count },
-    nextPage,
-    queryParams,
+    if (queryParams?.collection_id && queryParams.collection_id.length > 0) {
+      filtered = filtered.filter((p) =>
+        queryParams.collection_id?.includes(p.collection_id as string)
+      )
+    }
+
+    if (queryParams?.category_id && queryParams.category_id.length > 0) {
+      filtered = filtered.filter((p) =>
+        p.categories?.some((c) => queryParams.category_id?.includes(c.id))
+      )
+    }
+
+    if (queryParams?.id && queryParams.id.length > 0) {
+      filtered = filtered.filter((p) => queryParams.id?.includes(p.id!))
+    }
+
+    const count = filtered.length
+    const paginated = filtered.slice(pageParam, pageParam + limit)
+    const transformedProducts = paginated.map((product) => {
+      return transformProductPreview(product, region)
+    })
+
+    const nextPage = count > pageParam + limit ? pageParam + limit : null
+
+    return {
+      response: { products: transformedProducts, count },
+      nextPage,
+      queryParams,
+    }
   }
 })
 
@@ -578,8 +605,10 @@ export const retrieveCollection = cache(async function (id: string) {
       },
     })
     .then(({ collection }) => collection)
-    .catch((err) => {
-      throw err
+    .catch(() => {
+      return (
+        MOCK_COLLECTIONS.find((c) => c.id === id) || MOCK_COLLECTIONS[0]
+      )
     })
 })
 
@@ -587,32 +616,33 @@ export const getCollectionsList = cache(async function (
   offset: number = 0,
   limit: number = 100
 ): Promise<{ collections: ProductCollection[]; count: number }> {
-  const collections = await medusaClient.collections
+  return medusaClient.collections
     .list({ limit, offset }, { next: { tags: ["collections"] } })
-    .then(({ collections }) => collections)
-    .catch((err) => {
-      throw err
+    .then(({ collections }) => ({
+      collections: collections && collections.length > 0 ? collections : MOCK_COLLECTIONS,
+      count: collections && collections.length > 0 ? collections.length : MOCK_COLLECTIONS.length,
+    }))
+    .catch(() => {
+      const slice = MOCK_COLLECTIONS.slice(offset, offset + limit)
+      return {
+        collections: slice,
+        count: MOCK_COLLECTIONS.length,
+      }
     })
-
-  const count = collections.length
-
-  return {
-    collections,
-    count,
-  }
 })
 
 export const getCollectionByHandle = cache(async function (
   handle: string
 ): Promise<ProductCollection> {
-  const collection = await medusaClient.collections
+  return medusaClient.collections
     .list({ handle: [handle] }, { next: { tags: ["collections"] } })
-    .then(({ collections }) => collections[0])
-    .catch((err) => {
-      throw err
+    .then(({ collections }) => collections[0] || MOCK_COLLECTIONS.find((c) => c.handle === handle) || MOCK_COLLECTIONS[0])
+    .catch(() => {
+      return (
+        MOCK_COLLECTIONS.find((c) => c.handle === handle) ||
+        MOCK_COLLECTIONS[0]
+      )
     })
-
-  return collection
 })
 
 export const getProductsByCollectionHandle = cache(
@@ -631,19 +661,14 @@ export const getProductsByCollectionHandle = cache(
     response: { products: ProductPreviewType[]; count: number }
     nextPage: number | null
   }> {
-    const { id } = await getCollectionByHandle(handle).then(
-      (collection) => collection
-    )
+    const collection = await getCollectionByHandle(handle)
+    const id = collection?.id || MOCK_COLLECTIONS[0].id
 
     const { response, nextPage } = await getProductsList({
       pageParam,
       queryParams: { collection_id: [id], limit },
       countryCode,
     })
-      .then((res) => res)
-      .catch((err) => {
-        throw err
-      })
 
     return {
       response,
@@ -662,9 +687,13 @@ export const listCategories = cache(async function () {
 
   return medusaClient.productCategories
     .list({ expand: "category_children" }, headers)
-    .then(({ product_categories }) => product_categories)
-    .catch((err) => {
-      throw err
+    .then(({ product_categories }) =>
+      product_categories && product_categories.length > 0
+        ? product_categories
+        : MOCK_CATEGORIES
+    )
+    .catch(() => {
+      return MOCK_CATEGORIES
     })
 })
 
@@ -675,16 +704,24 @@ export const getCategoriesList = cache(async function (
   product_categories: ProductCategoryWithChildren[]
   count: number
 }> {
-  const { product_categories, count } = await medusaClient.productCategories
+  return medusaClient.productCategories
     .list({ limit, offset }, { next: { tags: ["categories"] } })
-    .catch((err) => {
-      throw err
+    .then(({ product_categories }) => ({
+      product_categories:
+        product_categories && product_categories.length > 0
+          ? (product_categories as ProductCategoryWithChildren[])
+          : MOCK_CATEGORIES,
+      count:
+        product_categories && product_categories.length > 0
+          ? product_categories.length
+          : MOCK_CATEGORIES.length,
+    }))
+    .catch(() => {
+      return {
+        product_categories: MOCK_CATEGORIES,
+        count: MOCK_CATEGORIES.length,
+      }
     })
-
-  return {
-    product_categories,
-    count,
-  }
 })
 
 export const getCategoryByHandle = cache(async function (
@@ -699,23 +736,31 @@ export const getCategoryByHandle = cache(async function (
   const product_categories = [] as ProductCategoryWithChildren[]
 
   for (const handle of handles) {
-    const category = await medusaClient.productCategories
-      .list(
-        {
-          handle: handle,
-        },
-        {
-          next: {
-            tags: ["categories"],
-          },
-        }
-      )
-      .then(({ product_categories: { [0]: category } }) => category)
-      .catch((err) => {
-        return {} as ProductCategory
-      })
+    try {
+      const category = await medusaClient.productCategories
+        .list(
+          { handle: handle },
+          {
+            next: {
+              tags: ["categories"],
+            },
+          }
+        )
+        .then(({ product_categories: { [0]: category } }) => category)
 
-    product_categories.push(category)
+      if (category && category.id) {
+        product_categories.push(category as ProductCategoryWithChildren)
+      } else {
+        const found =
+          MOCK_CATEGORIES.find((c) => c.handle === handle) ||
+          MOCK_CATEGORIES[0]
+        product_categories.push(found)
+      }
+    } catch {
+      const found =
+        MOCK_CATEGORIES.find((c) => c.handle === handle) || MOCK_CATEGORIES[0]
+      product_categories.push(found)
+    }
   }
 
   return {
@@ -736,19 +781,14 @@ export const getProductsByCategoryHandle = cache(async function ({
   response: { products: ProductPreviewType[]; count: number }
   nextPage: number | null
 }> {
-  const { id } = await getCategoryByHandle([handle]).then(
-    (res) => res.product_categories[0]
-  )
+  const categoryRes = await getCategoryByHandle([handle])
+  const id = categoryRes.product_categories[0]?.id || MOCK_CATEGORIES[0].id
 
   const { response, nextPage } = await getProductsList({
     pageParam,
     queryParams: { category_id: [id] },
     countryCode,
   })
-    .then((res) => res)
-    .catch((err) => {
-      throw err
-    })
 
   return {
     response,

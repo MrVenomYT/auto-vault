@@ -31,14 +31,14 @@ const CountrySelect = ({ toggleState, regions }: CountrySelectProps) => {
   const options: CountryOption[] | undefined = useMemo(() => {
     return regions
       ?.map((r) => {
-        return r.countries.map((c) => ({
+        return (r.countries || []).map((c: any) => ({
           country: c.iso_2,
           region: r.id,
-          label: c.display_name,
+          label: c.display_name || c.name || c.iso_2?.toUpperCase() || "",
         }))
       })
       .flat()
-      .sort((a, b) => a.label.localeCompare(b.label))
+      .sort((a, b) => (a?.label || "").localeCompare(b?.label || ""))
   }, [regions])
 
   useEffect(() => {

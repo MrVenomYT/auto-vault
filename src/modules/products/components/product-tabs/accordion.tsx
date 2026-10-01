@@ -27,8 +27,7 @@ const Accordion: React.FC<AccordionProps> & {
   Item: React.FC<AccordionItemProps>
 } = ({ children, ...props }) => {
   return (
-    /* @ts-expect-error */
-    <AccordionPrimitive.Root {...props}>{children}</AccordionPrimitive.Root>
+    <AccordionPrimitive.Root {...(props as any)}>{children}</AccordionPrimitive.Root>
   )
 }
 
@@ -45,24 +44,21 @@ const Item: React.FC<AccordionItemProps> = ({
   ...props
 }) => {
   return (
-    /* @ts-expect-error */
     <AccordionPrimitive.Item
-      {...props}
+      {...(props as any)}
       className={clx(
         "border-grey-20 group border-t last:mb-0 last:border-b",
         "py-3",
         className
       )}
     >
-      {/* @ts-expect-error */}
       <AccordionPrimitive.Header className="px-1">
         <div className="flex flex-col">
           <div className="flex w-full items-center justify-between">
             <div className="flex items-center gap-4">
               <Text className="text-ui-fg-subtle text-sm">{title}</Text>
             </div>
-            {/* @ts-expect-error */}
-            <AccordionPrimitive.Trigger>
+            <AccordionPrimitive.Trigger asChild>
               {customTrigger || <MorphingTrigger />}
             </AccordionPrimitive.Trigger>
           </div>
@@ -73,7 +69,6 @@ const Item: React.FC<AccordionItemProps> = ({
           )}
         </div>
       </AccordionPrimitive.Header>
-      {/* @ts-expect-error */}
       <AccordionPrimitive.Content
         forceMount={forceMountContent}
         className={clx(

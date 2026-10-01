@@ -1,0 +1,6 @@
+{
+  "name": "Auto Vault Luxury Cars",
+  "description": "Authentic showroom and transparent PNG car inventory with Stripe checkout.",
+  "permissions": [],
+  "capabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

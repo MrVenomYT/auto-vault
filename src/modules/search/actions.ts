@@ -1,6 +1,7 @@
 "use server"
 
 import { SEARCH_INDEX_NAME, searchClient } from "@lib/search-client"
+import { MOCK_PRODUCTS } from "@lib/mock-data"
 
 interface Hits {
   readonly objectID?: string
@@ -13,18 +14,28 @@ interface Hits {
  * @param {string} query - search query
  */
 export async function search(query: string) {
-  // MeiliSearch
-  const queries = [{ params: { query }, indexName: SEARCH_INDEX_NAME }]
-  const { results } = (await searchClient.search(queries)) as Record<
-    string,
-    any
-  >
-  const { hits } = results[0] as { hits: Hits[] }
-
-  // In case you want to use Algolia instead of MeiliSearch, uncomment the following lines and delete the above lines.
-
-  // const index = searchClient.initIndex(SEARCH_INDEX_NAME)
-  // const { hits } = (await index.search(query)) as { hits: Hits[] }
-
-  return hits
+  try {
+    // MeiliSearch
+    const queries = [{ params: { query }, indexName: SEARCH_INDEX_NAME }]
+    const { results } = (await searchClient.search(queries)) as Record<
+      string,
+      any
+    >
+    const { hits } = results[0] as { hits: Hits[] }
+    return hits || []
+  } catch (err) {
+    const q = (query || "").toLowerCase()
+    const matches = MOCK_PRODUCTS.filter(
+      (p) =>
+        p.title?.toLowerCase().includes(q) ||
+        p.description?.toLowerCase().includes(q)
+    ).map((p) => ({
+      id: p.id,
+      objectID: p.id,
+      title: p.title,
+      handle: p.handle,
+      thumbnail: p.thumbnail,
+    }))
+    return matches as Hits[]
+  }
 }

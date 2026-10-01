@@ -140,6 +140,7 @@ const Payment = ({
                 onChange={(value: string) => handleChange(value)}
               >
                 {cart.payment_sessions
+                  .filter((session) => session.provider_id.startsWith("stripe"))
                   .sort((a, b) => {
                     return a.provider_id > b.provider_id ? 1 : -1
                   })

@@ -11,26 +11,9 @@ export const paymentInfoMap: Record<
   { title: string; icon: React.JSX.Element }
 > = {
   stripe: {
-    title: "Credit card",
+    title: "Credit card (Stripe)",
     icon: <CreditCard />,
   },
-  "stripe-ideal": {
-    title: "iDeal",
-    icon: <Ideal />,
-  },
-  "stripe-bancontact": {
-    title: "Bancontact",
-    icon: <Bancontact />,
-  },
-  paypal: {
-    title: "PayPal",
-    icon: <PayPal />,
-  },
-  manual: {
-    title: "Test payment",
-    icon: <CreditCard />,
-  },
-  // Add more payment providers here
 }
 
 // Add currencies that don't need to be divided by 100
