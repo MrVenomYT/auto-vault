@@ -1,0 +1,43 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 500" width="100%" height="100%">
+  <defs>
+    <linearGradient id="p959Silver" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#ffffff"/>
+      <stop offset="35%" stop-color="#cbd2db"/>
+      <stop offset="80%" stop-color="#8c97a6"/>
+      <stop offset="100%" stop-color="#4d5561"/>
+    </linearGradient>
+    <radialGradient id="p959Sh" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="rgba(0,0,0,0.6)"/>
+      <stop offset="100%" stop-color="rgba(0,0,0,0)"/>
+    </radialGradient>
+  </defs>
+
+  <ellipse cx="400" cy="435" rx="360" ry="24" fill="url(#p959Sh)"/>
+
+  <circle cx="210" cy="370" r="55" fill="#111"/>
+  <circle cx="600" cy="370" r="58" fill="#111"/>
+
+  <!-- Aerodynamic Group B Homologation Bodywork -->
+  <path d="M 90 375 Q 100 320 180 300 L 320 280 Q 370 200 460 200 L 530 205 Q 650 220 730 290 L 730 380 L 90 380 Z" fill="url(#p959Silver)" stroke="#555f6b" stroke-width="1.5"/>
+
+  <!-- Seamless Integrated Rear Wrap Around Aerodynamic Wing -->
+  <path d="M 620 250 Q 720 230 740 280 L 740 330 Q 700 290 620 290 Z" fill="url(#p959Silver)" stroke="#444b54" stroke-width="1.5"/>
+
+  <!-- Slant Nose Style Flush Aerodynamic Headlights -->
+  <ellipse cx="140" cy="330" rx="18" ry="12" fill="#eaf3fc" stroke="#8c97a6" stroke-width="2"/>
+  <circle cx="140" cy="330" r="6" fill="#fff"/>
+
+  <!-- Curved 911 Roofline with Flush Glazing -->
+  <path d="M 330 275 L 390 205 L 510 205 L 590 275 Z" fill="#151b22" stroke="#333" stroke-width="2"/>
+  <path d="M 340 270 L 395 212 L 455 212 L 455 270 Z" fill="rgba(180,215,245,0.4)"/>
+  <path d="M 465 270 L 465 212 L 505 212 L 575 270 Z" fill="rgba(180,215,245,0.4)"/>
+
+  <!-- Magnesium Hollow Spoke Wheels with Central Nut -->
+  <circle cx="215" cy="380" r="75" fill="#151515"/>
+  <circle cx="215" cy="380" r="52" fill="#c4ccd6" stroke="#222" stroke-width="3"/>
+  <circle cx="215" cy="380" r="15" fill="#151515"/>
+
+  <circle cx="595" cy="380" r="78" fill="#151515"/>
+  <circle cx="595" cy="380" r="55" fill="#c4ccd6" stroke="#222" stroke-width="3"/>
+  <circle cx="595" cy="380" r="16" fill="#151515"/>
+</svg>

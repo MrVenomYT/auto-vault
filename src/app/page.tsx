@@ -3,7 +3,7 @@
 import { useState, useMemo } from "react"
 import Image from "next/image"
 import { VEHICLES_DB } from "@/lib/db/vehicles"
-import { StructuredVehicle, VehicleCategory, HistoricalEra } from "@/lib/types/vehicle"
+import { StructuredVehicle } from "@/lib/types/vehicle"
 import TimelineNav from "@/components/TimelineNav"
 import VehicleDetailModal from "@/components/VehicleDetailModal"
 import StructuredStripeModal from "@/components/StructuredStripeModal"
@@ -24,10 +24,12 @@ import {
   Fuel,
   Key,
   Globe,
-  Tag
+  Loader2,
+  Plus
 } from "lucide-react"
 
 export default function HomePage() {
+  const [customVehicles, setCustomVehicles] = useState<StructuredVehicle[]>([])
   const [selectedEra, setSelectedEra] = useState<string>("All Eras")
   const [selectedCategory, setSelectedCategory] = useState<string>("All Categories")
   const [selectedManufacturer, setSelectedManufacturer] = useState<string>("All Manufacturers")
@@ -36,6 +38,12 @@ export default function HomePage() {
   const [rentalOnly, setRentalOnly] = useState<boolean>(false)
   const [searchQuery, setSearchQuery] = useState<string>("")
   
+  // Real time search state
+  const [realtimeInput, setRealtimeInput] = useState<string>("")
+  const [isSearchingRealtime, setIsSearchingRealtime] = useState<boolean>(false)
+  const [realtimeError, setRealtimeError] = useState<string | null>(null)
+  const [realtimeFoundVehicle, setRealtimeFoundVehicle] = useState<StructuredVehicle | null>(null)
+
   const [detailVehicle, setDetailVehicle] = useState<StructuredVehicle | null>(null)
   const [stripeVehicle, setStripeVehicle] = useState<StructuredVehicle | null>(null)
   const [stripeMode, setStripeMode] = useState<"rental" | "purchase">("purchase")
@@ -76,34 +84,29 @@ export default function HomePage() {
     "Experimental Vehicle"
   ]
 
+  const allVehicles = useMemo(() => {
+    return [...customVehicles, ...VEHICLES_DB]
+  }, [customVehicles])
+
   const manufacturers = useMemo(() => {
     const set = new Set<string>()
-    VEHICLES_DB.forEach((v) => set.add(v.manufacturer.name))
+    allVehicles.forEach((v) => set.add(v.manufacturer.name))
     return ["All Manufacturers", ...Array.from(set).sort()]
-  }, [])
+  }, [allVehicles])
 
   const filteredVehicles = useMemo(() => {
-    return VEHICLES_DB.filter((item) => {
-      // Exact year or range
+    return allVehicles.filter((item) => {
       if (selectedExactYear !== null) {
         if (item.vehicle.modelYear !== selectedExactYear) return false
       } else {
         if (item.vehicle.modelYear < yearRange[0] || item.vehicle.modelYear > yearRange[1]) return false
       }
 
-      // Era
       if (selectedEra !== "All Eras" && item.vehicle.era !== selectedEra) return false
-
-      // Category
       if (selectedCategory !== "All Categories" && item.vehicle.category !== selectedCategory) return false
-
-      // Manufacturer
       if (selectedManufacturer !== "All Manufacturers" && item.manufacturer.name !== selectedManufacturer) return false
-
-      // Rental availability
       if (rentalOnly && !item.rental.availableForRental) return false
 
-      // Search Query
       if (searchQuery.trim()) {
         const query = searchQuery.toLowerCase().trim()
         const matchName = item.vehicle.name.toLowerCase().includes(query)
@@ -120,7 +123,7 @@ export default function HomePage() {
 
       return true
     })
-  }, [selectedExactYear, yearRange, selectedEra, selectedCategory, selectedManufacturer, rentalOnly, searchQuery])
+  }, [allVehicles, selectedExactYear, yearRange, selectedEra, selectedCategory, selectedManufacturer, rentalOnly, searchQuery])
 
   const toggleCompare = (id: string) => {
     if (compareList.includes(id)) {
@@ -132,11 +135,43 @@ export default function HomePage() {
     }
   }
 
-  const comparedVehicles = VEHICLES_DB.filter((v) => compareList.includes(v.vehicleId))
+  const comparedVehicles = allVehicles.filter((v) => compareList.includes(v.vehicleId))
 
   const handleOpenStripe = (vehicle: StructuredVehicle, mode: "rental" | "purchase") => {
     setStripeVehicle(vehicle)
     setStripeMode(mode)
+  }
+
+  // Real-time car search using RapidAPI and Gemini API
+  const handleRealtimeSearch = async (e: React.FormEvent) => {
+    e.preventDefault()
+    if (!realtimeInput.trim()) return
+
+    setIsSearchingRealtime(true)
+    setRealtimeError(null)
+    setRealtimeFoundVehicle(null)
+
+    try {
+      const res = await fetch("/api/cars/realtime", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ carName: realtimeInput.trim() }),
+      })
+
+      const data = await res.json()
+      if (res.ok && data.vehicle) {
+        setRealtimeFoundVehicle(data.vehicle)
+        if (!customVehicles.some((v) => v.vehicleId === data.vehicle.vehicleId)) {
+          setCustomVehicles((prev) => [data.vehicle, ...prev])
+        }
+      } else {
+        setRealtimeError(data.error || "Could not retrieve real time vehicle details.")
+      }
+    } catch (err: any) {
+      setRealtimeError("Failed to connect to real time automotive service.")
+    } finally {
+      setIsSearchingRealtime(false)
+    }
   }
 
   return (
@@ -149,7 +184,7 @@ export default function HomePage() {
           <div className="text-center max-w-3xl mx-auto space-y-4">
             <div className="inline-flex items-center gap-2 bg-zinc-900 border border-zinc-700/80 px-4 py-1.5 rounded-full text-xs font-semibold text-zinc-300 uppercase tracking-widest">
               <Sparkles className="w-3.5 h-3.5 text-red-500" />
-              <span>Authentic Historical and Modern Vehicle Database</span>
+              <span>Real Time Automotive Intelligence</span>
             </div>
 
             <h1 className="text-4xl sm:text-6xl font-black tracking-tight text-white leading-tight">
@@ -157,47 +192,129 @@ export default function HomePage() {
             </h1>
 
             <p className="text-base sm:text-lg text-zinc-400 max-w-2xl mx-auto leading-relaxed">
-              Explore authentic manufacturer models across all production eras with verified backgroundless photography, comprehensive mechanical records, and secure Stripe payments.
+              Explore authentic manufacturer models across all production eras with real time backgroundless images according to name, powered by RapidAPI and Gemini.
             </p>
           </div>
 
-          {/* Hero Featured Car */}
-          <div className="relative max-w-4xl mx-auto pt-4">
-            <div className="relative w-full h-72 sm:h-96 flex items-center justify-center">
-              <Image
-                src="https://pngimg.com/d/porsche_PNG10613.png"
-                alt="Porsche 911 Carrera S"
-                fill
-                priority
-                className="object-contain drop-shadow-[0_25px_35px_rgba(0,0,0,0.85)] hover:scale-105 transition-transform duration-500"
-                referrerPolicy="no-referrer"
-              />
-            </div>
-
-            <div className="mt-2 bg-zinc-900/90 backdrop-blur-md border border-zinc-800 rounded-3xl p-6 flex flex-col sm:flex-row items-center justify-between gap-4 max-w-3xl mx-auto shadow-2xl">
-              <div>
-                <span className="text-xs uppercase tracking-wider text-red-500 font-bold block">Featured Showcase</span>
-                <h2 className="text-xl font-bold text-white">2024 Porsche 911 Carrera S (992 Generation)</h2>
-                <span className="text-xs text-zinc-400">443 HP Twin Turbo Boxer 6 with Porsche Active Suspension</span>
+          {/* Real-time Car Search Bar by Name */}
+          <div className="max-w-2xl mx-auto">
+            <form
+              onSubmit={handleRealtimeSearch}
+              className="bg-zinc-900/90 border border-indigo-500/40 rounded-2xl p-2.5 flex items-center gap-2 shadow-2xl shadow-indigo-950/40"
+            >
+              <div className="relative flex-1">
+                <Search className="w-5 h-5 text-indigo-400 absolute left-3.5 top-3" />
+                <input
+                  type="text"
+                  value={realtimeInput}
+                  onChange={(e) => setRealtimeInput(e.target.value)}
+                  placeholder="Enter any car name e.g. Ferrari Roma, Lamborghini Huracan, BMW M5..."
+                  className="w-full bg-zinc-950 border border-zinc-800 rounded-xl pl-11 pr-4 py-2.5 text-sm text-white placeholder-zinc-500 focus:outline-none focus:border-indigo-500"
+                />
               </div>
 
-              <div className="flex items-center gap-3 w-full sm:w-auto">
-                <button
-                  onClick={() => handleOpenStripe(VEHICLES_DB.find((v) => v.vehicleId === "veh_porsche_911_carrera_s_2024") || VEHICLES_DB[0], "rental")}
-                  className="flex-1 sm:flex-none bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-semibold px-4 py-3 rounded-xl transition-all shadow-md shadow-emerald-600/20 flex items-center justify-center gap-1.5"
-                >
-                  <Key className="w-4 h-4" />
-                  <span>Rent $850/Day</span>
-                </button>
-                <button
-                  onClick={() => setDetailVehicle(VEHICLES_DB.find((v) => v.vehicleId === "veh_porsche_911_carrera_s_2024") || VEHICLES_DB[0])}
-                  className="flex-1 sm:flex-none bg-zinc-800 hover:bg-zinc-700 text-white text-xs font-semibold px-4 py-3 rounded-xl transition-all"
-                >
-                  Full Details
-                </button>
-              </div>
-            </div>
+              <button
+                type="submit"
+                disabled={isSearchingRealtime || !realtimeInput.trim()}
+                className="bg-indigo-600 hover:bg-indigo-700 disabled:opacity-50 text-white text-xs sm:text-sm font-semibold px-5 py-3 rounded-xl transition-all shadow-md shadow-indigo-600/30 flex items-center gap-2 flex-shrink-0"
+              >
+                {isSearchingRealtime ? (
+                  <>
+                    <Loader2 className="w-4 h-4 animate-spin" />
+                    <span>Analyzing...</span>
+                  </>
+                ) : (
+                  <>
+                    <Sparkles className="w-4 h-4" />
+                    <span>Get Real Time Car</span>
+                  </>
+                )}
+              </button>
+            </form>
+
+            {realtimeError && (
+              <p className="text-xs text-red-400 text-center mt-2">{realtimeError}</p>
+            )}
           </div>
+
+          {/* Real-Time Retrieved Car Card Spotlight */}
+          {realtimeFoundVehicle && (
+            <div className="mt-6 bg-gradient-to-r from-indigo-950/60 via-zinc-900 to-zinc-900 border border-indigo-500/50 rounded-3xl p-6 max-w-3xl mx-auto shadow-2xl space-y-4">
+              <div className="flex items-center justify-between">
+                <div className="inline-flex items-center gap-2 bg-indigo-500/20 text-indigo-300 border border-indigo-500/30 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider">
+                  <Sparkles className="w-3.5 h-3.5" />
+                  <span>Real Time Vehicle Retrieved</span>
+                </div>
+                <span className="text-xs text-zinc-400 font-mono">
+                  {realtimeFoundVehicle.vehicle.era}
+                </span>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-center">
+                <div className="relative w-full h-48 bg-zinc-950 rounded-2xl p-4 flex items-center justify-center border border-zinc-800">
+                  <Image
+                    src={realtimeFoundVehicle.images.primaryImage.url}
+                    alt={realtimeFoundVehicle.vehicle.fullName}
+                    fill
+                    className="object-contain p-2 drop-shadow-xl"
+                    referrerPolicy="no-referrer"
+                  />
+                </div>
+
+                <div className="space-y-3">
+                  <div>
+                    <span className="text-xs text-indigo-400 font-bold uppercase tracking-wider block">
+                      {realtimeFoundVehicle.manufacturer.name}
+                    </span>
+                    <h3 className="text-2xl font-black text-white">
+                      {realtimeFoundVehicle.vehicle.modelYear} {realtimeFoundVehicle.vehicle.fullName}
+                    </h3>
+                    <p className="text-xs text-zinc-400 mt-1 line-clamp-2">
+                      {realtimeFoundVehicle.metadata.description}
+                    </p>
+                  </div>
+
+                  <div className="grid grid-cols-3 gap-2 text-center text-xs">
+                    <div className="bg-zinc-950 p-2 rounded-xl border border-zinc-800">
+                      <div className="font-bold text-white">{realtimeFoundVehicle.specifications.horsepower} HP</div>
+                      <div className="text-[10px] text-zinc-500">Power</div>
+                    </div>
+                    <div className="bg-zinc-950 p-2 rounded-xl border border-zinc-800">
+                      <div className="font-bold text-white">{realtimeFoundVehicle.specifications.acceleration?.split(" ")[0]}</div>
+                      <div className="text-[10px] text-zinc-500">0 to 60</div>
+                    </div>
+                    <div className="bg-zinc-950 p-2 rounded-xl border border-zinc-800">
+                      <div className="font-bold text-white">{realtimeFoundVehicle.specifications.topSpeed?.split(" ")[0]}</div>
+                      <div className="text-[10px] text-zinc-500">Speed</div>
+                    </div>
+                  </div>
+
+                  <div className="flex items-center gap-2 pt-1">
+                    <button
+                      onClick={() => setDetailVehicle(realtimeFoundVehicle)}
+                      className="flex-1 bg-zinc-800 hover:bg-zinc-700 text-white text-xs font-semibold py-2.5 rounded-xl transition-colors"
+                    >
+                      Specifications
+                    </button>
+                    <button
+                      onClick={() => handleOpenStripe(realtimeFoundVehicle, "rental")}
+                      className="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-semibold py-2.5 rounded-xl transition-colors flex items-center justify-center gap-1.5"
+                    >
+                      <Key className="w-3.5 h-3.5" />
+                      <span>Rent ${realtimeFoundVehicle.rental.dailyRate}/Day</span>
+                    </button>
+                    <button
+                      onClick={() => handleOpenStripe(realtimeFoundVehicle, "purchase")}
+                      className="flex-1 bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-semibold py-2.5 rounded-xl transition-colors flex items-center justify-center gap-1.5"
+                    >
+                      <CreditCard className="w-3.5 h-3.5" />
+                      <span>Reserve</span>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
         </div>
       </section>
 
@@ -362,7 +479,7 @@ export default function HomePage() {
             <SlidersHorizontal className="w-10 h-10 mx-auto text-zinc-600" />
             <h3 className="text-lg font-bold text-white">No historical vehicles found</h3>
             <p className="text-xs max-w-sm mx-auto">
-              Try adjusting your era filter or clearing the search term to view vehicles from other decades.
+              Try adjusting your era filter or searching for any real car using the real time lookup bar above.
             </p>
             <button
               onClick={() => {
@@ -517,7 +634,7 @@ export default function HomePage() {
         )}
       </section>
 
-      {/* Comparison Drawer */}
+      {/* Comparison Matrix */}
       {comparedVehicles.length > 0 && (
         <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="bg-zinc-900 border border-zinc-800 rounded-3xl p-6 sm:p-8">

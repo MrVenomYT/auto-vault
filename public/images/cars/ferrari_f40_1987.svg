@@ -1,0 +1,53 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 500" width="100%" height="100%">
+  <defs>
+    <linearGradient id="f40Red" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#ff2a2a"/>
+      <stop offset="35%" stop-color="#d40000"/>
+      <stop offset="85%" stop-color="#8a0000"/>
+      <stop offset="100%" stop-color="#400000"/>
+    </linearGradient>
+    <radialGradient id="f40Sh" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="rgba(0,0,0,0.6)"/>
+      <stop offset="100%" stop-color="rgba(0,0,0,0)"/>
+    </radialGradient>
+  </defs>
+
+  <ellipse cx="400" cy="435" rx="360" ry="24" fill="url(#f40Sh)"/>
+
+  <circle cx="210" cy="370" r="55" fill="#111"/>
+  <circle cx="600" cy="370" r="58" fill="#111"/>
+
+  <!-- Low Slung Carbon Kevlar Bodywork -->
+  <path d="M 80 375 L 120 330 L 320 290 L 400 205 L 510 205 L 610 260 L 720 260 L 730 380 L 80 380 Z" fill="url(#f40Red)" stroke="#660000" stroke-width="1.5"/>
+
+  <!-- High Fixed Rear Aerodynamic Wing (F40 Signature) -->
+  <polygon points="650,260 670,180 735,180 720,260" fill="url(#f40Red)" stroke="#800" stroke-width="2"/>
+  <polygon points="630,260 650,180 670,180 650,260" fill="url(#f40Red)" stroke="#800" stroke-width="2"/>
+  <rect x="640" y="175" width="105" height="14" rx="2" fill="url(#f40Red)" stroke="#600" stroke-width="2"/>
+
+  <!-- Twin NACA Ducts on Front Hood -->
+  <polygon points="210,315 240,295 240,315" fill="#111"/>
+  <polygon points="260,305 290,285 290,305" fill="#111"/>
+
+  <!-- Large Side NACA Intercooler Air Duct -->
+  <polygon points="460,340 540,300 540,340" fill="#111"/>
+
+  <!-- Louvered Lexan Rear Engine Glass -->
+  <polygon points="510,210 590,260 550,260 490,210" fill="#151b22" stroke="#444" stroke-width="1.5"/>
+  <g stroke="#111" stroke-width="2">
+    <line x1="515" y1="220" x2="575" y2="255"/>
+    <line x1="510" y1="230" x2="565" y2="260"/>
+  </g>
+
+  <!-- Side Windows with Sliding Lexan Panels -->
+  <polygon points="370,280 415,215 480,215 450,280" fill="rgba(180,225,255,0.4)" stroke="#111" stroke-width="2"/>
+
+  <!-- Speedline 5-Spoke Split Rim Star Wheels -->
+  <circle cx="215" cy="380" r="75" fill="#151515"/>
+  <circle cx="215" cy="380" r="50" fill="none" stroke="#ccc" stroke-width="4"/>
+  <polygon points="215,340 225,370 255,370 230,390 240,420 215,400 190,420 200,390 175,370 205,370" fill="#c0c0c0" stroke="#333" stroke-width="1.5"/>
+
+  <circle cx="595" cy="380" r="78" fill="#151515"/>
+  <circle cx="595" cy="380" r="52" fill="none" stroke="#ccc" stroke-width="4"/>
+  <polygon points="595,340 605,370 635,370 610,390 620,420 595,400 570,420 580,390 555,370 585,370" fill="#c0c0c0" stroke="#333" stroke-width="1.5"/>
+</svg>

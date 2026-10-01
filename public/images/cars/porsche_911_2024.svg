@@ -1,0 +1,46 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 500" width="100%" height="100%">
+  <defs>
+    <linearGradient id="pGuardsRed" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#ff3333"/>
+      <stop offset="35%" stop-color="#d40000"/>
+      <stop offset="85%" stop-color="#8a0000"/>
+      <stop offset="100%" stop-color="#4d0000"/>
+    </linearGradient>
+    <radialGradient id="p992Sh" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="rgba(0,0,0,0.6)"/>
+      <stop offset="100%" stop-color="rgba(0,0,0,0)"/>
+    </radialGradient>
+  </defs>
+
+  <ellipse cx="400" cy="435" rx="360" ry="24" fill="url(#p992Sh)"/>
+
+  <circle cx="210" cy="370" r="55" fill="#111"/>
+  <circle cx="600" cy="370" r="58" fill="#111"/>
+
+  <!-- 992 Carrera S Modern Body Silhouette -->
+  <path d="M 80 375 Q 90 320 180 300 L 320 280 Q 370 190 460 190 L 530 195 Q 650 215 730 330 L 720 380 L 80 380 Z" fill="url(#pGuardsRed)" stroke="#700" stroke-width="1.5"/>
+
+  <!-- Four Point Matrix LED Headlights -->
+  <circle cx="150" cy="315" r="16" fill="#000" stroke="#ff8080" stroke-width="1.5"/>
+  <circle cx="145" cy="310" r="3" fill="#fff"/>
+  <circle cx="155" cy="310" r="3" fill="#fff"/>
+  <circle cx="145" cy="320" r="3" fill="#fff"/>
+  <circle cx="155" cy="320" r="3" fill="#fff"/>
+
+  <!-- Continuous Red LED Lightbar across Rear -->
+  <path d="M 680 310 Q 710 325 725 335" fill="none" stroke="#ff0000" stroke-width="4" stroke-linecap="round"/>
+
+  <!-- Dark Greenhouse & Sport Seats -->
+  <path d="M 330 275 L 390 195 L 510 195 L 590 275 Z" fill="#151b22" stroke="#222" stroke-width="2"/>
+  <path d="M 340 270 L 395 202 L 455 202 L 455 270 Z" fill="rgba(180,215,245,0.4)"/>
+  <path d="M 465 270 L 465 202 L 505 202 L 575 270 Z" fill="rgba(180,215,245,0.4)"/>
+
+  <!-- Modern Carrera S RS Spyder Design Wheels -->
+  <circle cx="215" cy="380" r="75" fill="#151515"/>
+  <circle cx="215" cy="380" r="52" fill="#222" stroke="#bbb" stroke-width="3"/>
+  <circle cx="215" cy="380" r="14" fill="#151515"/>
+
+  <circle cx="595" cy="380" r="78" fill="#151515"/>
+  <circle cx="595" cy="380" r="55" fill="#222" stroke="#bbb" stroke-width="3"/>
+  <circle cx="595" cy="380" r="15" fill="#151515"/>
+</svg>

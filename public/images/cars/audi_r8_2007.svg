@@ -1,0 +1,40 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 500" width="100%" height="100%">
+  <defs>
+    <linearGradient id="r8Silver" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#ffffff"/>
+      <stop offset="35%" stop-color="#cbd3dc"/>
+      <stop offset="80%" stop-color="#8a95a3"/>
+      <stop offset="100%" stop-color="#464e59"/>
+    </linearGradient>
+    <radialGradient id="r8Sh" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="rgba(0,0,0,0.6)"/>
+      <stop offset="100%" stop-color="rgba(0,0,0,0)"/>
+    </radialGradient>
+  </defs>
+
+  <ellipse cx="400" cy="435" rx="360" ry="24" fill="url(#r8Sh)"/>
+
+  <circle cx="210" cy="370" r="55" fill="#111"/>
+  <circle cx="600" cy="370" r="58" fill="#111"/>
+
+  <!-- First Gen Audi R8 Type 42 Mid-Engine Silhouette -->
+  <path d="M 80 375 Q 95 320 200 300 L 320 280 Q 370 195 460 195 L 530 200 Q 650 230 730 340 L 720 380 L 80 380 Z" fill="url(#r8Silver)" stroke="#4e5763" stroke-width="1.5"/>
+
+  <!-- Iconic Carbon Fiber Sideblade (Signature R8) -->
+  <polygon points="460,200 510,200 480,360 430,360" fill="#15171a" stroke="#000" stroke-width="2"/>
+
+  <!-- Singleframe Front Grille with Audi Rings on Hood -->
+  <polygon points="90,340 120,310 160,310 130,340" fill="#111" stroke="#333" stroke-width="1.5"/>
+
+  <!-- First Production Full LED Daytime Running Lights -->
+  <path d="M 130 325 Q 160 315 180 305" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round"/>
+
+  <!-- 5-Arm Double Spoke R8 Wheels -->
+  <circle cx="215" cy="380" r="75" fill="#151515"/>
+  <circle cx="215" cy="380" r="54" fill="#b0bac6" stroke="#222" stroke-width="3"/>
+  <circle cx="215" cy="380" r="14" fill="#111"/>
+
+  <circle cx="595" cy="380" r="78" fill="#151515"/>
+  <circle cx="595" cy="380" r="57" fill="#b0bac6" stroke="#222" stroke-width="3"/>
+  <circle cx="595" cy="380" r="15" fill="#111"/>
+</svg>

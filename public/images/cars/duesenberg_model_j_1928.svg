@@ -1,0 +1,75 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 500" width="100%" height="100%">
+  <defs>
+    <linearGradient id="duesBlue" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#1b3b6f"/>
+      <stop offset="60%" stop-color="#0e2347"/>
+      <stop offset="100%" stop-color="#050e1f"/>
+    </linearGradient>
+    <linearGradient id="chrome" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ffffff"/>
+      <stop offset="50%" stop-color="#c9d2db"/>
+      <stop offset="100%" stop-color="#7a8591"/>
+    </linearGradient>
+    <radialGradient id="dsh" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="rgba(0,0,0,0.6)"/>
+      <stop offset="100%" stop-color="rgba(0,0,0,0)"/>
+    </radialGradient>
+  </defs>
+
+  <ellipse cx="400" cy="445" rx="360" ry="25" fill="url(#dsh)"/>
+
+  <!-- Left Perspective Wheels -->
+  <circle cx="240" cy="360" r="70" fill="none" stroke="#222" stroke-width="12"/>
+  <circle cx="580" cy="360" r="70" fill="none" stroke="#222" stroke-width="12"/>
+
+  <!-- Sweeping Luxury Classic Fenders -->
+  <path d="M 100 370 Q 180 250 310 370 L 510 370 Q 610 250 710 370" fill="none" stroke="#061226" stroke-width="26" stroke-linecap="round"/>
+  <path d="M 100 370 Q 180 250 310 370 L 510 370 Q 610 250 710 370" fill="none" stroke="url(#chrome)" stroke-width="2"/>
+
+  <!-- Long Hood and Torpedo Body -->
+  <path d="M 120 330 L 130 240 L 360 230 L 670 250 L 680 370 L 120 370 Z" fill="url(#duesBlue)" stroke="#0e2347" stroke-width="2"/>
+
+  <!-- Chrome Tall Vertical Grille -->
+  <rect x="110" y="235" width="25" height="110" rx="4" fill="url(#chrome)" stroke="#555" stroke-width="1.5"/>
+  <g stroke="#333" stroke-width="1.5">
+    <line x1="115" y1="240" x2="115" y2="340"/>
+    <line x1="120" y1="240" x2="120" y2="340"/>
+    <line x1="125" y1="240" x2="125" y2="340"/>
+    <line x1="130" y1="240" x2="130" y2="340"/>
+  </g>
+  <!-- Duesenberg Flying Bird Hood Ornament -->
+  <path d="M 120 235 L 140 220 L 150 225" fill="none" stroke="url(#chrome)" stroke-width="3"/>
+
+  <!-- Dual Windshields (Dual Cowl Phaeton) -->
+  <!-- Driver Windshield -->
+  <polygon points="360,230 380,170 410,170 395,230" fill="rgba(200,230,255,0.4)" stroke="url(#chrome)" stroke-width="3"/>
+  <!-- Rear Passenger Windshield -->
+  <polygon points="490,235 505,185 535,185 520,235" fill="rgba(200,230,255,0.4)" stroke="url(#chrome)" stroke-width="3"/>
+
+  <!-- Side Chrome Exhaust Headers -->
+  <path d="M 230 260 Q 250 290 280 330 M 245 260 Q 265 290 295 330 M 260 260 Q 280 290 310 330 M 275 260 Q 295 290 325 330" fill="none" stroke="url(#chrome)" stroke-width="5"/>
+
+  <!-- Right Front Wire Wheel with Whitewall Tire -->
+  <circle cx="210" cy="380" r="90" fill="none" stroke="#111" stroke-width="18"/>
+  <circle cx="210" cy="380" r="74" fill="none" stroke="#fff" stroke-width="10"/>
+  <circle cx="210" cy="380" r="62" fill="none" stroke="url(#chrome)" stroke-width="4"/>
+  <circle cx="210" cy="380" r="22" fill="url(#chrome)"/>
+  <g stroke="#bbb" stroke-width="1.2">
+    <line x1="210" y1="318" x2="210" y2="442"/>
+    <line x1="148" y1="380" x2="272" y2="380"/>
+    <line x1="166" y1="336" x2="254" y2="424"/>
+    <line x1="166" y1="424" x2="254" y2="336"/>
+  </g>
+
+  <!-- Right Rear Wire Wheel with Whitewall Tire -->
+  <circle cx="620" cy="380" r="90" fill="none" stroke="#111" stroke-width="18"/>
+  <circle cx="620" cy="380" r="74" fill="none" stroke="#fff" stroke-width="10"/>
+  <circle cx="620" cy="380" r="62" fill="none" stroke="url(#chrome)" stroke-width="4"/>
+  <circle cx="620" cy="380" r="22" fill="url(#chrome)"/>
+  <g stroke="#bbb" stroke-width="1.2">
+    <line x1="620" y1="318" x2="620" y2="442"/>
+    <line x1="558" y1="380" x2="682" y2="380"/>
+    <line x1="576" y1="336" x2="664" y2="424"/>
+    <line x1="576" y1="424" x2="664" y2="336"/>
+  </g>
+</svg>

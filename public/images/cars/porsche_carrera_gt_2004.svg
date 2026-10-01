@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 500" width="100%" height="100%">
+  <defs>
+    <linearGradient id="gtSilver" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#ffffff"/>
+      <stop offset="35%" stop-color="#c6cbd2"/>
+      <stop offset="80%" stop-color="#848e9c"/>
+      <stop offset="100%" stop-color="#464e59"/>
+    </linearGradient>
+    <radialGradient id="cgtSh" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="rgba(0,0,0,0.6)"/>
+      <stop offset="100%" stop-color="rgba(0,0,0,0)"/>
+    </radialGradient>
+  </defs>
+
+  <ellipse cx="400" cy="435" rx="360" ry="24" fill="url(#cgtSh)"/>
+
+  <circle cx="210" cy="370" r="55" fill="#111"/>
+  <circle cx="600" cy="370" r="58" fill="#111"/>
+
+  <!-- Carrera GT Low Slung Mid Engine Speedster Body -->
+  <path d="M 80 375 Q 100 320 190 300 L 320 280 Q 360 210 440 210 L 510 220 Q 640 240 730 330 L 720 380 L 80 380 Z" fill="url(#gtSilver)" stroke="#4e5661" stroke-width="1.5"/>
+
+  <!-- Twin Streamlined Aerodynamic Roll Hoops Behind Cockpit -->
+  <path d="M 430 210 Q 470 165 510 210" fill="url(#gtSilver)" stroke="#333" stroke-width="2"/>
+  <path d="M 490 215 Q 525 175 560 220" fill="url(#gtSilver)" stroke="#333" stroke-width="2"/>
+
+  <!-- Open Targa Cockpit & Beechwood Shifter Homage -->
+  <ellipse cx="380" cy="250" rx="14" ry="18" fill="#662211" stroke="#331108" stroke-width="2"/>
+
+  <!-- Carrera GT 5-Spoke Magnesium Centerlock Wheels -->
+  <circle cx="215" cy="380" r="75" fill="#151515"/>
+  <circle cx="215" cy="380" r="52" fill="#b8c0ca" stroke="#222" stroke-width="2"/>
+  <circle cx="215" cy="380" r="14" fill="#0055ff"/>
+
+  <circle cx="595" cy="380" r="78" fill="#151515"/>
+  <circle cx="595" cy="380" r="55" fill="#b8c0ca" stroke="#222" stroke-width="2"/>
+  <circle cx="595" cy="380" r="15" fill="#ff0000"/>
+</svg>

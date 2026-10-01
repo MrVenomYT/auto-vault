@@ -1,0 +1,52 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 500" width="100%" height="100%">
+  <defs>
+    <linearGradient id="pIvory" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#ffffff"/>
+      <stop offset="50%" stop-color="#ede9df"/>
+      <stop offset="100%" stop-color="#beb8a7"/>
+    </linearGradient>
+    <linearGradient id="pChrome" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ffffff"/>
+      <stop offset="50%" stop-color="#c4ccd4"/>
+      <stop offset="100%" stop-color="#727e8a"/>
+    </linearGradient>
+    <radialGradient id="pSh" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="rgba(0,0,0,0.6)"/>
+      <stop offset="100%" stop-color="rgba(0,0,0,0)"/>
+    </radialGradient>
+  </defs>
+
+  <ellipse cx="400" cy="430" rx="350" ry="24" fill="url(#pSh)"/>
+
+  <!-- Left Perspective Wheels -->
+  <circle cx="210" cy="365" r="55" fill="#111"/>
+  <circle cx="580" cy="365" r="55" fill="#111"/>
+
+  <!-- Curved Teardrop Speedster Body -->
+  <path d="M 110 360 Q 120 290 190 280 L 330 280 Q 360 210 440 210 L 510 220 Q 640 260 690 350 L 680 375 L 110 375 Z" fill="url(#pIvory)" stroke="#8e8979" stroke-width="1.5"/>
+
+  <!-- Low Cut Curved Speedster Windshield -->
+  <path d="M 310 280 Q 380 200 480 210 L 500 275 Z" fill="rgba(190,225,245,0.4)" stroke="url(#pChrome)" stroke-width="3.5"/>
+
+  <!-- Minimalist Speedster Bucket Seat Headrests -->
+  <ellipse cx="440" cy="245" rx="14" ry="18" fill="#801414" stroke="#4a0a0a" stroke-width="2"/>
+  <ellipse cx="485" cy="250" rx="13" ry="16" fill="#801414" stroke="#4a0a0a" stroke-width="2"/>
+
+  <!-- Round Porsche 356 Headlight Lens -->
+  <circle cx="150" cy="310" r="18" fill="#e8f3ff" stroke="url(#pChrome)" stroke-width="3"/>
+  <circle cx="150" cy="310" r="10" fill="#fff"/>
+
+  <!-- Chrome Horn Grille & Bumper -->
+  <rect x="135" y="340" width="16" height="10" rx="2" fill="url(#pChrome)"/>
+  <path d="M 100 365 Q 130 380 180 375" fill="none" stroke="url(#pChrome)" stroke-width="6" stroke-linecap="round"/>
+
+  <!-- Right Front Chrome Baby Moon Hubcap Wheel -->
+  <circle cx="215" cy="380" r="70" fill="#151515"/>
+  <circle cx="215" cy="380" r="45" fill="url(#pChrome)" stroke="#333" stroke-width="2"/>
+  <circle cx="215" cy="380" r="12" fill="#fff"/>
+
+  <!-- Right Rear Chrome Baby Moon Hubcap Wheel -->
+  <circle cx="585" cy="380" r="70" fill="#151515"/>
+  <circle cx="585" cy="380" r="45" fill="url(#pChrome)" stroke="#333" stroke-width="2"/>
+  <circle cx="585" cy="380" r="12" fill="#fff"/>
+</svg>

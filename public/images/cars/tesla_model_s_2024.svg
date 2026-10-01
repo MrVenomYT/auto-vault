@@ -1,0 +1,39 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 500" width="100%" height="100%">
+  <defs>
+    <linearGradient id="ultraRed" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#cc1829"/>
+      <stop offset="40%" stop-color="#990f1d"/>
+      <stop offset="85%" stop-color="#660a13"/>
+      <stop offset="100%" stop-color="#33050a"/>
+    </linearGradient>
+    <radialGradient id="tsSh" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="rgba(0,0,0,0.6)"/>
+      <stop offset="100%" stop-color="rgba(0,0,0,0)"/>
+    </radialGradient>
+  </defs>
+
+  <ellipse cx="400" cy="435" rx="360" ry="24" fill="url(#tsSh)"/>
+
+  <circle cx="210" cy="370" r="55" fill="#111"/>
+  <circle cx="600" cy="370" r="58" fill="#111"/>
+
+  <!-- Model S Plaid Low Drag Aerodynamic Sedan Silhouette -->
+  <path d="M 80 375 Q 95 320 200 300 L 320 285 Q 400 195 520 195 L 580 200 Q 690 230 730 340 L 720 380 L 80 380 Z" fill="url(#ultraRed)" stroke="#4d070e" stroke-width="1.5"/>
+
+  <!-- Flush Glass Panoramic Roof & Retractable Handles -->
+  <path d="M 330 275 L 390 195 L 540 195 L 620 275 Z" fill="#151b22" stroke="#222" stroke-width="2"/>
+  <path d="M 340 270 L 395 202 L 475 202 L 475 270 Z" fill="rgba(180,215,245,0.4)"/>
+  <path d="M 485 270 L 485 202 L 535 202 L 605 270 Z" fill="rgba(180,215,245,0.4)"/>
+
+  <!-- Plaid Carbon Fiber Rear Lip Spoiler -->
+  <polygon points="700,320 735,325 735,335 700,330" fill="#0a0a0a"/>
+
+  <!-- 21-inch Arachnid Matte Black Wheels -->
+  <circle cx="215" cy="380" r="75" fill="#151515"/>
+  <circle cx="215" cy="380" r="54" fill="#111" stroke="#333" stroke-width="3"/>
+  <circle cx="215" cy="380" r="14" fill="#cc1829"/>
+
+  <circle cx="595" cy="380" r="78" fill="#151515"/>
+  <circle cx="595" cy="380" r="57" fill="#111" stroke="#333" stroke-width="3"/>
+  <circle cx="595" cy="380" r="15" fill="#cc1829"/>
+</svg>
