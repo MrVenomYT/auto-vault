@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server"
-import { CARS_DATA } from "@/lib/cars"
+import { getAllVehicles } from "@/lib/mongodb"
 
 export async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url)
@@ -11,9 +11,8 @@ export async function GET(req: NextRequest) {
   const endYear = parseInt(searchParams.get("endYear") || "2026", 10)
 
   const rapidApiKey = process.env.RAPID_API_KEY
-
-  // If query is for a specific model not in core seed and rapidApiKey is available, try RapidAPI
   let rapidApiResults: any[] = []
+
   if (query && rapidApiKey && query.length > 2) {
     try {
       const response = await fetch(
@@ -34,26 +33,28 @@ export async function GET(req: NextRequest) {
     }
   }
 
-  // Filter core 1880 to 2026 catalog
-  let filtered = CARS_DATA.filter((car) => {
-    const matchesYear = car.year >= startYear && car.year <= endYear
-    const matchesMake = !make || car.make.toLowerCase().includes(make)
-    const matchesEra = !era || era === "All Eras" || car.era === era
-    const matchesCategory = !category || category === "All Categories" || car.category === category
+  const allVehicles = await getAllVehicles()
+
+  let filtered = allVehicles.filter((v: any) => {
+    const yr = v.vehicle.modelYear
+    const matchesYear = yr >= startYear && yr <= endYear
+    const matchesMake = !make || v.manufacturer.name.toLowerCase().includes(make)
+    const matchesEra = !era || era === "All Eras" || v.vehicle.era === era
+    const matchesCategory = !category || category === "All Categories" || v.vehicle.category === category
     const matchesQuery =
       !query ||
-      car.make.toLowerCase().includes(query) ||
-      car.model.toLowerCase().includes(query) ||
-      car.category.toLowerCase().includes(query) ||
-      car.engine.toLowerCase().includes(query) ||
-      car.year.toString().includes(query)
+      v.manufacturer.name.toLowerCase().includes(query) ||
+      v.vehicle.name.toLowerCase().includes(query) ||
+      v.vehicle.fullName.toLowerCase().includes(query) ||
+      v.vehicle.category.toLowerCase().includes(query) ||
+      yr.toString().includes(query)
 
     return matchesYear && matchesMake && matchesEra && matchesCategory && matchesQuery
   })
 
   return NextResponse.json({
     total: filtered.length,
-    cars: filtered,
+    vehicles: filtered,
     rapidApiMatches: rapidApiResults.length,
   })
 }

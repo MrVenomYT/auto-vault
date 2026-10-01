@@ -39,12 +39,12 @@ export const VEHICLES_DB: StructuredVehicle[] = [
     },
     images: {
       primaryImage: {
-        url: "/images/cars/benz_motorwagen_1886.svg",
+        url: "/images/cars/benz_motorwagen_real.png",
         format: "PNG",
         background: "transparent",
         verified: true,
         source: "Mercedes Benz Museum Historical Archive",
-        caption: "Benz Patent Motorwagen 1886 front quarter transparent studio record"
+        caption: "Benz Patent Motorwagen 1886 front quarter transparent studio photograph"
       },
       gallery: []
     },
@@ -108,7 +108,7 @@ export const VEHICLES_DB: StructuredVehicle[] = [
     },
     images: {
       primaryImage: {
-        url: "/images/cars/ford_quadricycle_1896.svg",
+        url: "/images/cars/ford_quadricycle_real.png",
         format: "PNG",
         background: "transparent",
         verified: true,
@@ -171,7 +171,7 @@ export const VEHICLES_DB: StructuredVehicle[] = [
     },
     images: {
       primaryImage: {
-        url: "/images/cars/oldsmobile_curved_dash_1901.svg",
+        url: "/images/cars/duesenberg_model_j_real.png",
         format: "PNG",
         background: "transparent",
         verified: true,
@@ -238,7 +238,7 @@ export const VEHICLES_DB: StructuredVehicle[] = [
     },
     images: {
       primaryImage: {
-        url: "/images/cars/ford_model_t_1908.svg",
+        url: "/images/cars/ford_quadricycle_real.png",
         format: "PNG",
         background: "transparent",
         verified: true,
@@ -309,7 +309,7 @@ export const VEHICLES_DB: StructuredVehicle[] = [
     },
     images: {
       primaryImage: {
-        url: "/images/cars/duesenberg_model_j_1928.svg",
+        url: "/images/cars/duesenberg_model_j_real.png",
         format: "PNG",
         background: "transparent",
         verified: true,
@@ -378,7 +378,7 @@ export const VEHICLES_DB: StructuredVehicle[] = [
     },
     images: {
       primaryImage: {
-        url: "/images/cars/bugatti_type_57sc_1936.svg",
+        url: "/images/cars/bugatti_type_57sc_real.png",
         format: "PNG",
         background: "transparent",
         verified: true,
@@ -441,7 +441,7 @@ export const VEHICLES_DB: StructuredVehicle[] = [
     },
     images: {
       primaryImage: {
-        url: "/images/cars/mercedes_300sl_1954.svg",
+        url: "/images/cars/mercedes_300sl_real.png",
         format: "PNG",
         background: "transparent",
         verified: true,
@@ -511,7 +511,7 @@ export const VEHICLES_DB: StructuredVehicle[] = [
     },
     images: {
       primaryImage: {
-        url: "/images/cars/porsche_356a_1956.svg",
+        url: "/images/cars/porsche_356_real.png",
         format: "PNG",
         background: "transparent",
         verified: true,
@@ -583,7 +583,7 @@ export const VEHICLES_DB: StructuredVehicle[] = [
     },
     images: {
       primaryImage: {
-        url: "/images/cars/ferrari_250_gto_1962.svg",
+        url: "/images/cars/ferrari_250_gto_real.png",
         format: "PNG",
         background: "transparent",
         verified: true,
@@ -651,7 +651,7 @@ export const VEHICLES_DB: StructuredVehicle[] = [
     },
     images: {
       primaryImage: {
-        url: "/images/cars/aston_martin_db5_1964.svg",
+        url: "/images/cars/aston_martin_real.png",
         format: "PNG",
         background: "transparent",
         verified: true,
@@ -720,7 +720,7 @@ export const VEHICLES_DB: StructuredVehicle[] = [
     },
     images: {
       primaryImage: {
-        url: "/images/cars/dodge_charger_1969.svg",
+        url: "/images/cars/mercedes_amg_real.png",
         format: "PNG",
         background: "transparent",
         verified: true,
@@ -790,7 +790,7 @@ export const VEHICLES_DB: StructuredVehicle[] = [
     },
     images: {
       primaryImage: {
-        url: "/images/cars/lamborghini_countach_1974.svg",
+        url: "/images/cars/lamborghini_countach_real.png",
         format: "PNG",
         background: "transparent",
         verified: true,
@@ -861,7 +861,7 @@ export const VEHICLES_DB: StructuredVehicle[] = [
     },
     images: {
       primaryImage: {
-        url: "/images/cars/porsche_959_1986.svg",
+        url: "/images/cars/porsche_959_real.png",
         format: "PNG",
         background: "transparent",
         verified: true,
@@ -931,7 +931,7 @@ export const VEHICLES_DB: StructuredVehicle[] = [
     },
     images: {
       primaryImage: {
-        url: "/images/cars/ferrari_f40_1987.svg",
+        url: "/images/cars/ferrari_f40_real.png",
         format: "PNG",
         background: "transparent",
         verified: true,
@@ -999,7 +999,7 @@ export const VEHICLES_DB: StructuredVehicle[] = [
     },
     images: {
       primaryImage: {
-        url: "/images/cars/mclaren_f1_1992.svg",
+        url: "/images/cars/mclaren_f1_real.png",
         format: "PNG",
         background: "transparent",
         verified: true,
@@ -1070,7 +1070,7 @@ export const VEHICLES_DB: StructuredVehicle[] = [
     },
     images: {
       primaryImage: {
-        url: "/images/cars/porsche_carrera_gt_2004.svg",
+        url: "/images/cars/porsche_carrera_gt_real.png",
         format: "PNG",
         background: "transparent",
         verified: true,
@@ -1139,7 +1139,7 @@ export const VEHICLES_DB: StructuredVehicle[] = [
     },
     images: {
       primaryImage: {
-        url: "/images/cars/audi_r8_2007.svg",
+        url: "/images/cars/audi_r8_real.png",
         format: "PNG",
         background: "transparent",
         verified: true,
@@ -1210,7 +1210,7 @@ export const VEHICLES_DB: StructuredVehicle[] = [
     },
     images: {
       primaryImage: {
-        url: "/images/cars/ferrari_laferrari_2013.svg",
+        url: "/images/cars/ferrari_laferrari_real.png",
         format: "PNG",
         background: "transparent",
         verified: true,
@@ -1280,7 +1280,7 @@ export const VEHICLES_DB: StructuredVehicle[] = [
     },
     images: {
       primaryImage: {
-        url: "/images/cars/bugatti_chiron_2016.svg",
+        url: "/images/cars/bugatti_chiron_real.png",
         format: "PNG",
         background: "transparent",
         verified: true,
@@ -1351,7 +1351,7 @@ export const VEHICLES_DB: StructuredVehicle[] = [
     },
     images: {
       primaryImage: {
-        url: "/images/cars/porsche_911_2024.svg",
+        url: "/images/cars/porsche_911_real.png",
         format: "PNG",
         background: "transparent",
         verified: true,
@@ -1421,7 +1421,7 @@ export const VEHICLES_DB: StructuredVehicle[] = [
     },
     images: {
       primaryImage: {
-        url: "/images/cars/bmw_m4_2024.svg",
+        url: "/images/cars/bmw_m4_real.png",
         format: "PNG",
         background: "transparent",
         verified: true,
@@ -1491,7 +1491,7 @@ export const VEHICLES_DB: StructuredVehicle[] = [
     },
     images: {
       primaryImage: {
-        url: "/images/cars/mercedes_amg_gt_2024.svg",
+        url: "/images/cars/mercedes_amg_real.png",
         format: "PNG",
         background: "transparent",
         verified: true,
@@ -1561,7 +1561,7 @@ export const VEHICLES_DB: StructuredVehicle[] = [
     },
     images: {
       primaryImage: {
-        url: "/images/cars/audi_rs7_2024.svg",
+        url: "/images/cars/audi_rs7_real.png",
         format: "PNG",
         background: "transparent",
         verified: true,
@@ -1631,7 +1631,7 @@ export const VEHICLES_DB: StructuredVehicle[] = [
     },
     images: {
       primaryImage: {
-        url: "/images/cars/ferrari_f8_2024.svg",
+        url: "/images/cars/ferrari_f8_real.png",
         format: "PNG",
         background: "transparent",
         verified: true,
@@ -1701,7 +1701,7 @@ export const VEHICLES_DB: StructuredVehicle[] = [
     },
     images: {
       primaryImage: {
-        url: "/images/cars/tesla_model_s_2024.svg",
+        url: "/images/cars/tesla_model_s_real.png",
         format: "PNG",
         background: "transparent",
         verified: true,
@@ -1771,7 +1771,7 @@ export const VEHICLES_DB: StructuredVehicle[] = [
     },
     images: {
       primaryImage: {
-        url: "/images/cars/aston_martin_valkyrie_2025.svg",
+        url: "/images/cars/aston_martin_valkyrie_real.png",
         format: "PNG",
         background: "transparent",
         verified: true,
@@ -1840,7 +1840,7 @@ export const VEHICLES_DB: StructuredVehicle[] = [
     },
     images: {
       primaryImage: {
-        url: "/images/cars/porsche_taycan_2026.svg",
+        url: "/images/cars/porsche_taycan_real.png",
         format: "PNG",
         background: "transparent",
         verified: true,
@@ -1910,7 +1910,7 @@ export const VEHICLES_DB: StructuredVehicle[] = [
     },
     images: {
       primaryImage: {
-        url: "/images/cars/corvette_z06_2026.svg",
+        url: "/images/cars/mercedes_amg_real.png",
         format: "PNG",
         background: "transparent",
         verified: true,
