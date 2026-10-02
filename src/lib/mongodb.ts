@@ -42,7 +42,7 @@ let inMemoryBookings: any[] = [
     customer: {
       fullName: "Julian Sterling",
       email: "julian.sterling@autovault.com",
-      phone: "+1 (555) 234-8901",
+      phone: "+1 555 234 8901",
       billingZip: "90210"
     },
     payment: {
@@ -73,7 +73,7 @@ let inMemoryBookings: any[] = [
     customer: {
       fullName: "Victoria Windsor",
       email: "victoria.windsor@heritage.org",
-      phone: "+1 (555) 987-6543",
+      phone: "+1 555 987 6543",
       billingZip: "10021"
     },
     payment: {
@@ -103,7 +103,7 @@ let inMemoryBookings: any[] = [
     customer: {
       fullName: "Alexander Vance",
       email: "alexander.vance@velocity.com",
-      phone: "+1 (555) 345-6789",
+      phone: "+1 555 345 6789",
       billingZip: "33139"
     },
     payment: {
@@ -129,7 +129,7 @@ let inMemoryInquiries: any[] = [
     inquiryId: "INQ_3012",
     name: "Marcus Aurelius Bradley",
     email: "m.bradley@investmentgroup.com",
-    phone: "+1 (555) 789-0123",
+    phone: "+1 555 789 0123",
     vehicleInterest: "Bugatti Chiron 2016",
     message: "Requesting international enclosed air freight quote to Geneva, Switzerland.",
     status: "new",

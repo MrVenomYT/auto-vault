@@ -84,7 +84,7 @@ export const VEHICLES_DB: StructuredVehicle[] = [
       fullName: "Ford Quadricycle Runabout",
       modelCode: "Quad 1",
       generation: "Henry Ford First Experimental Vehicle",
-      category: "Experimental Vehicle",
+      category: "Vintage",
       bodyType: "Open Runabout",
       modelYear: 1896,
       productionStartYear: 1896,
@@ -103,7 +103,7 @@ export const VEHICLES_DB: StructuredVehicle[] = [
       seatingCapacity: 2,
       doors: 0,
       topSpeed: "20 mph",
-      acceleration: null,
+      acceleration: "30.0 sec 0 to 20 mph",
       curbWeight: "500 lbs"
     },
     images: {
@@ -135,73 +135,6 @@ export const VEHICLES_DB: StructuredVehicle[] = [
   },
 
   // 1900 to 1919 (Early Production and Vintage)
-  {
-    vehicleId: "veh_oldsmobile_curved_dash_1901",
-    manufacturer: {
-      name: "Oldsmobile",
-      country: "United States",
-      foundedYear: 1897
-    },
-    vehicle: {
-      name: "Curved Dash",
-      fullName: "Oldsmobile Curved Dash Model R",
-      modelCode: "Model R",
-      generation: "First Mass Production Automobile",
-      category: "Vintage",
-      bodyType: "Runabout Buggy",
-      modelYear: 1901,
-      productionStartYear: 1901,
-      productionEndYear: 1907,
-      vehicleStatus: "discontinued",
-      vehicleClassification: "production_vehicle",
-      era: "1900 to 1919 (Early Production and Vintage)"
-    },
-    specifications: {
-      engineType: "Single Cylinder Four Stroke Water Cooled Engine",
-      engineCapacity: "1.6L",
-      horsepower: 5,
-      transmission: "2 Speed Planetary Manual Transmission",
-      drivetrain: "Rear Wheel Chain Drive",
-      fuelType: "Gasoline",
-      seatingCapacity: 2,
-      doors: 0,
-      topSpeed: "20 mph",
-      acceleration: null,
-      curbWeight: "850 lbs"
-    },
-    images: {
-      primaryImage: {
-        url: "/images/cars/duesenberg_model_j_real.png",
-        format: "PNG",
-        background: "transparent",
-        verified: true,
-        source: "Smithsonian National Museum of American History"
-      },
-      gallery: []
-    },
-    rental: {
-      availableForRental: true,
-      dailyRate: 650,
-      weeklyRate: 3800,
-      monthlyRate: 14000,
-      depositAmount: 2500,
-      currency: "USD"
-    },
-    metadata: {
-      description: "The first high volume mass produced automobile in world history with iconic curved front dashboard.",
-      historicalSignificance: "Pioneered stationary assembly line manufacturing before Ford moving assembly line.",
-      officialSource: "Oldsmobile Historical Society Lansing Michigan",
-      valuationPrice: 65000,
-      availableTrims: [
-        { name: "Standard Runabout", price: 65000 }
-      ],
-      colorOptions: [
-        { name: "Black with Gold Pinstripe", hex: "#111111" }
-      ],
-      createdAt: "2026-10-01T00:00:00Z",
-      updatedAt: "2026-10-01T00:00:00Z"
-    }
-  },
   {
     vehicleId: "veh_ford_model_t_1908",
     manufacturer: {
@@ -238,7 +171,7 @@ export const VEHICLES_DB: StructuredVehicle[] = [
     },
     images: {
       primaryImage: {
-        url: "/images/cars/ford_quadricycle_real.png",
+        url: "/images/cars/ford_model_t_real.png",
         format: "PNG",
         background: "transparent",
         verified: true,
@@ -459,7 +392,7 @@ export const VEHICLES_DB: StructuredVehicle[] = [
     },
     metadata: {
       description: "First production sports car with mechanical direct fuel injection and iconic upward opening gullwing doors over a tubular spaceframe.",
-      historicalSignificance: "Established Mercedes-Benz motorsport heritage on American and European circuits.",
+      historicalSignificance: "Established Mercedes Benz motorsport heritage on American and European circuits.",
       officialSource: "Mercedes Benz Archive Stuttgart",
       valuationPrice: 1650000,
       availableTrims: [
@@ -559,7 +492,7 @@ export const VEHICLES_DB: StructuredVehicle[] = [
       fullName: "Ferrari 250 GTO Berlinetta",
       modelCode: "Tipo 539 62 Comp",
       generation: "Series 1 Homologation Special",
-      category: "Racing Car",
+      category: "Sports Car",
       bodyType: "Aerodynamic Berlinetta Coupe",
       modelYear: 1962,
       productionStartYear: 1962,
@@ -720,7 +653,7 @@ export const VEHICLES_DB: StructuredVehicle[] = [
     },
     images: {
       primaryImage: {
-        url: "/images/cars/mercedes_amg_real.png",
+        url: "/images/cars/dodge_charger_real.png",
         format: "PNG",
         background: "transparent",
         verified: true,
@@ -964,6 +897,75 @@ export const VEHICLES_DB: StructuredVehicle[] = [
     }
   },
   {
+    vehicleId: "veh_lamborghini_diablo_1990",
+    manufacturer: {
+      name: "Lamborghini",
+      country: "Italy",
+      foundedYear: 1963
+    },
+    vehicle: {
+      name: "Diablo",
+      fullName: "Lamborghini Diablo VT",
+      modelCode: "Diablo VT",
+      generation: "Viscous Traction Generation",
+      category: "Supercar",
+      bodyType: "Wedge Supercar Coupe",
+      modelYear: 1990,
+      productionStartYear: 1990,
+      productionEndYear: 2001,
+      vehicleStatus: "discontinued",
+      vehicleClassification: "production_vehicle",
+      era: "1980 to 1999 (Modern Classic and Supercars)"
+    },
+    specifications: {
+      engineType: "5.7L Naturally Aspirated 60 Degree V12",
+      engineCapacity: "5.7L",
+      horsepower: 485,
+      transmission: "5 Speed Gated Manual Transmission",
+      drivetrain: "Viscous Traction All Wheel Drive",
+      fuelType: "Premium Gasoline",
+      seatingCapacity: 2,
+      doors: 2,
+      topSpeed: "202 mph",
+      acceleration: "4.1 sec 0 to 60 mph",
+      curbWeight: "3472 lbs"
+    },
+    images: {
+      primaryImage: {
+        url: "/images/cars/lamborghini_diablo_real.png",
+        format: "PNG",
+        background: "transparent",
+        verified: true,
+        source: "Automobili Lamborghini Historical Collection"
+      },
+      gallery: []
+    },
+    rental: {
+      availableForRental: true,
+      dailyRate: 3400,
+      weeklyRate: 20000,
+      monthlyRate: 72000,
+      depositAmount: 11000,
+      currency: "USD"
+    },
+    metadata: {
+      description: "Marcello Gandini styled Italian icon, the first Lamborghini capable of breaching the 200 mph threshold.",
+      historicalSignificance: "Defined nineties supercar performance with viscous traction all wheel drive system.",
+      officialSource: "Lamborghini Historical Archive",
+      valuationPrice: 480000,
+      availableTrims: [
+        { name: "VT All Wheel Drive", price: 480000 },
+        { name: "SV Super Veloce", price: 620000 }
+      ],
+      colorOptions: [
+        { name: "Superfly Yellow", hex: "#ffd700" },
+        { name: "Diablo Rosso", hex: "#cc0000" }
+      ],
+      createdAt: "2026-10-01T00:00:00Z",
+      updatedAt: "2026-10-01T00:00:00Z"
+    }
+  },
+  {
     vehicleId: "veh_mclaren_f1_1992",
     manufacturer: {
       name: "McLaren Automotive",
@@ -1034,6 +1036,75 @@ export const VEHICLES_DB: StructuredVehicle[] = [
   },
 
   // 2000 to 2009 (Early Modern Era)
+  {
+    vehicleId: "veh_ford_gt_2005",
+    manufacturer: {
+      name: "Ford Motor Company",
+      country: "United States",
+      foundedYear: 1903
+    },
+    vehicle: {
+      name: "GT",
+      fullName: "Ford GT Supercharged V8",
+      modelCode: "Ford GT Gen 1",
+      generation: "Centennial Heritage Supercar",
+      category: "Supercar",
+      bodyType: "Mid Engine Supercar Coupe",
+      modelYear: 2005,
+      productionStartYear: 2004,
+      productionEndYear: 2006,
+      vehicleStatus: "discontinued",
+      vehicleClassification: "production_vehicle",
+      era: "2000 to 2009 (Early Modern Era)"
+    },
+    specifications: {
+      engineType: "5.4L Supercharged Modular 32 Valve V8",
+      engineCapacity: "5.4L",
+      horsepower: 550,
+      transmission: "Ricardo 6 Speed Manual Transaxle",
+      drivetrain: "Rear Mid Engine Rear Wheel Drive",
+      fuelType: "Premium Gasoline",
+      seatingCapacity: 2,
+      doors: 2,
+      topSpeed: "205 mph",
+      acceleration: "3.5 sec 0 to 60 mph",
+      curbWeight: "3485 lbs"
+    },
+    images: {
+      primaryImage: {
+        url: "/images/cars/ford_gt_real.png",
+        format: "PNG",
+        background: "transparent",
+        verified: true,
+        source: "Ford Performance Global Heritage Archive"
+      },
+      gallery: []
+    },
+    rental: {
+      availableForRental: true,
+      dailyRate: 1950,
+      weeklyRate: 11500,
+      monthlyRate: 42000,
+      depositAmount: 6000,
+      currency: "USD"
+    },
+    metadata: {
+      description: "Centennial tribute to the legendary four time Le Mans winning Ford GT40 with supercharged V8 and Ricardo manual gearbox.",
+      historicalSignificance: "One of the most celebrated analog American mid engine supercars ever constructed.",
+      officialSource: "Ford Motor Company Heritage Services",
+      valuationPrice: 465000,
+      availableTrims: [
+        { name: "Standard 4 Option", price: 465000 },
+        { name: "Heritage Gulf Edition", price: 650000 }
+      ],
+      colorOptions: [
+        { name: "Heritage Blue and Orange", hex: "#6cace4" },
+        { name: "Mark II Black with Silver Stripes", hex: "#111111" }
+      ],
+      createdAt: "2026-10-01T00:00:00Z",
+      updatedAt: "2026-10-01T00:00:00Z"
+    }
+  },
   {
     vehicleId: "veh_porsche_carrera_gt_2004",
     manufacturer: {
@@ -1327,7 +1398,7 @@ export const VEHICLES_DB: StructuredVehicle[] = [
       fullName: "Porsche 911 Carrera S",
       modelCode: "992.1 and 992.2",
       generation: "Eighth Generation 992",
-      category: "Sports Coupe" as any,
+      category: "Sports Car",
       bodyType: "Rear Engine Sports Coupe",
       modelYear: 2024,
       productionStartYear: 2019,
@@ -1397,7 +1468,7 @@ export const VEHICLES_DB: StructuredVehicle[] = [
       fullName: "BMW M4 Competition Coupe",
       modelCode: "G82",
       generation: "Second Generation G82",
-      category: "Coupe",
+      category: "Sports Car",
       bodyType: "High Performance Coupe",
       modelYear: 2024,
       productionStartYear: 2020,
@@ -1537,7 +1608,7 @@ export const VEHICLES_DB: StructuredVehicle[] = [
       fullName: "Audi RS7 Sportback Performance",
       modelCode: "Type 4K8",
       generation: "Second Generation 4K8",
-      category: "Sedan",
+      category: "Sports Car",
       bodyType: "Executive 5 Door Sportback",
       modelYear: 2024,
       productionStartYear: 2019,
@@ -1910,7 +1981,7 @@ export const VEHICLES_DB: StructuredVehicle[] = [
     },
     images: {
       primaryImage: {
-        url: "/images/cars/mercedes_amg_real.png",
+        url: "/images/cars/chevrolet_corvette_real.png",
         format: "PNG",
         background: "transparent",
         verified: true,

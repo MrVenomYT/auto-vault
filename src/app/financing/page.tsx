@@ -89,7 +89,7 @@ export default function FinancingPage() {
           </h1>
 
           <p className="text-sm sm:text-base text-zinc-400 max-w-2xl font-medium leading-relaxed">
-            Tailored bespoke financial structures for collectors, private buyers, and corporate entities. Calculate monthly payment obligations and submit for instant pre-qualification.
+            Tailored bespoke financial structures for collectors, private buyers, and corporate entities. Calculate monthly payment obligations and submit for instant pre qualification.
           </p>
         </div>
       </div>
@@ -100,7 +100,7 @@ export default function FinancingPage() {
           <div>
             <h2 className="text-2xl font-black text-white">Live Loan Payment Estimator</h2>
             <p className="text-xs sm:text-sm text-zinc-400 mt-1">
-              Adjust vehicle valuation, down payment, loan duration, and trade-in allowance in real time.
+              Adjust vehicle valuation, down payment, loan duration, and trade in allowance in real time.
             </p>
           </div>
 
@@ -168,7 +168,7 @@ export default function FinancingPage() {
                 </div>
 
                 <div className="bg-zinc-950 p-5 rounded-2xl border border-zinc-850 space-y-2">
-                  <label className="block text-xs font-bold text-zinc-300">Trade-In Allowance</label>
+                  <label className="block text-xs font-bold text-zinc-300">Trade In Allowance</label>
                   <input
                     type="number"
                     value={tradeInValue || ""}
@@ -203,8 +203,8 @@ export default function FinancingPage() {
                 </div>
                 {tradeInValue > 0 && (
                   <div className="flex justify-between">
-                    <span>Trade-In Credit</span>
-                    <span className="font-mono text-emerald-400">-{currencySymbol}{tradeInValue.toLocaleString()}</span>
+                    <span>Trade In Credit</span>
+                    <span className="font-mono text-emerald-400">Less {currencySymbol}{tradeInValue.toLocaleString()}</span>
                   </div>
                 )}
               </div>
@@ -212,10 +212,10 @@ export default function FinancingPage() {
               <div className="bg-zinc-900/80 p-4 rounded-2xl border border-zinc-800 space-y-1 text-xs">
                 <span className="font-bold text-white flex items-center gap-1.5">
                   <ShieldCheck className="w-4 h-4 text-emerald-400" />
-                  Pre-Approval Guarantee
+                  Pre Approval Guarantee
                 </span>
                 <p className="text-[11px] text-zinc-400">
-                  Pre-qualification does not impact your credit score and locks your interest rate for 45 calendar days.
+                  Pre qualification does not impact your credit score and locks your interest rate for 45 calendar days.
                 </p>
               </div>
             </div>
@@ -225,7 +225,7 @@ export default function FinancingPage() {
         {/* Application Form */}
         <div className="bg-zinc-900/80 border border-zinc-800 rounded-3xl p-6 sm:p-10 space-y-6">
           <div>
-            <h2 className="text-2xl font-black text-white">Online Pre-Approval Application</h2>
+            <h2 className="text-2xl font-black text-white">Online Pre Approval Application</h2>
             <p className="text-xs sm:text-sm text-zinc-400 mt-1">
               Submit your financing request directly to our executive underwriting desk.
             </p>
@@ -278,7 +278,7 @@ export default function FinancingPage() {
                   required
                   value={applicantPhone}
                   onChange={(e) => setApplicantPhone(e.target.value)}
-                  placeholder="+1 (555) 234-5678"
+                  placeholder="+1 555 234 5678"
                   className="w-full bg-zinc-950 border border-zinc-800 rounded-xl px-3.5 py-2.5 text-white placeholder-zinc-500 focus:outline-none focus:border-red-600"
                 />
               </div>
@@ -313,7 +313,7 @@ export default function FinancingPage() {
                   disabled={isSubmitting}
                   className="bg-red-600 hover:bg-red-700 disabled:opacity-50 text-white font-bold py-3.5 px-8 rounded-2xl text-xs transition-all shadow-lg shadow-red-600/30"
                 >
-                  {isSubmitting ? "Submitting Application..." : "Submit Pre-Approval Application"}
+                  {isSubmitting ? "Submitting Application..." : "Submit Pre Approval Application"}
                 </button>
               </div>
             </form>

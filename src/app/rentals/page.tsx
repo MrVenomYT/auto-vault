@@ -2,7 +2,7 @@
 
 import { useState, useMemo, useEffect } from "react"
 import Link from "next/link"
-import Image from "next/image"
+import CarImage from "@/components/CarImage"
 import { VEHICLES_DB } from "@/lib/db/vehicles"
 import { StructuredVehicle } from "@/lib/types/vehicle"
 import { usePlatformSettings } from "@/context/PlatformSettingsContext"
@@ -78,7 +78,7 @@ export default function RentalsPage() {
           </h1>
 
           <p className="text-sm sm:text-base text-zinc-400 max-w-2xl font-medium leading-relaxed">
-            Experience the world&apos;s most thrilling automotive icons on your terms. From the 2024 Porsche 911 Carrera S and Ferrari F8 Tributo to legendary historic classics, delivered directly with white-glove transport.
+            Experience the world&apos;s most thrilling automotive icons on your terms. From the 2024 Porsche 911 Carrera S and Ferrari F8 Tributo to legendary historic classics, delivered directly with white glove transport.
           </p>
 
           {/* Key Rental Highlights */}
@@ -166,13 +166,13 @@ export default function RentalsPage() {
                 href={`/vehicles/${vehicle.vehicleId}`}
                 className="relative w-full h-52 px-4 flex items-center justify-center my-3 block"
               >
-                <Image
+                <CarImage
                   src={vehicle.images.primaryImage.url}
                   alt={vehicle.vehicle.fullName}
                   fill
                   className="object-contain drop-shadow-[0_15px_25px_rgba(0,0,0,0.85)] group-hover:scale-105 transition-transform duration-500"
-                  referrerPolicy="no-referrer"
                   sizes="(max-width: 768px) 100vw, 33vw"
+                  fallbackUrls={vehicle.images?.gallery?.map(g => g.url) || []}
                 />
               </Link>
 
@@ -232,7 +232,7 @@ export default function RentalsPage() {
               <p>A standard holding deposit is authorized at checkout and fully released upon vehicle return and inspection.</p>
             </div>
             <div className="space-y-2">
-              <span className="font-bold text-white text-sm block">White-Glove Delivery</span>
+              <span className="font-bold text-white text-sm block">White Glove Delivery</span>
               <p>Optional enclosed transport carrier delivers directly to private residences, hotels, airports, or race tracks.</p>
             </div>
           </div>

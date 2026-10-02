@@ -208,7 +208,7 @@ export default function Navbar() {
                 isActive("/financing") ? "bg-red-950/60 text-red-400 border border-red-900/60" : "text-zinc-300 hover:bg-zinc-900"
               }`}
             >
-              <span>Financing &amp; Trade-In Appraisal</span>
+              <span>Financing &amp; Trade In Appraisal</span>
               <ChevronRight className="w-4 h-4 text-zinc-500" />
             </Link>
 

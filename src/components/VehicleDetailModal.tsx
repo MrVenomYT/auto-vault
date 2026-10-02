@@ -1,6 +1,6 @@
 "use client"
 
-import Image from "next/image"
+import CarImage from "@/components/CarImage"
 import { StructuredVehicle } from "@/lib/types/vehicle"
 import {
   X,
@@ -72,17 +72,14 @@ export default function VehicleDetailModal({
 
         {/* Large Transparent PNG Display */}
         <div className="relative w-full h-72 sm:h-96 bg-zinc-950 rounded-2xl p-6 my-4 flex items-center justify-center border border-zinc-800/80 overflow-hidden shadow-inner">
-          <Image
+          <CarImage
             src={vehicle.images.primaryImage.url}
             alt={vehicle.vehicle.fullName}
             fill
             className="object-contain p-4 drop-shadow-[0_20px_30px_rgba(0,0,0,0.9)]"
-            referrerPolicy="no-referrer"
+            showVerifiedBadge={true}
+            fallbackUrls={vehicle.images?.gallery?.map(g => g.url) || []}
           />
-          <div className="absolute bottom-3 left-3 bg-zinc-900/90 backdrop-blur-sm border border-zinc-800 px-3 py-1 rounded-lg text-[10px] text-zinc-400 flex items-center gap-1.5">
-            <ShieldCheck className="w-3.5 h-3.5 text-emerald-400" />
-            <span>Verified Authentic Backgroundless PNG</span>
-          </div>
         </div>
 
         {/* Vehicle Description and Historical Significance */}

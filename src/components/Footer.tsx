@@ -58,7 +58,7 @@ export default function Footer() {
               </li>
               <li>
                 <Link href="/financing" className="hover:text-white transition-colors">
-                  Financing &amp; Trade-In Appraisal
+                  Financing &amp; Trade In Appraisal
                 </Link>
               </li>
               <li>

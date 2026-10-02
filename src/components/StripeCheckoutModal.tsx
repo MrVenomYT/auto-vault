@@ -490,7 +490,7 @@ export default function StripeCheckoutModal({
                     }`}
                   >
                     <span className="font-bold block text-white">Hold Deposit</span>
-                    <span className="text-[10px] text-zinc-400">{currencySymbol}5,000 7-Day Lock</span>
+                    <span className="text-[10px] text-zinc-400">{currencySymbol}5,000 7 Day Lock</span>
                   </button>
 
                   <button
@@ -515,7 +515,7 @@ export default function StripeCheckoutModal({
                         : "bg-zinc-900/70 border-zinc-800 text-zinc-400 hover:border-zinc-700"
                     }`}
                   >
-                    <span className="font-bold block text-white">Full Wire/Escrow</span>
+                    <span className="font-bold block text-white">Full Wire Escrow</span>
                     <span className="text-[10px] text-zinc-400">Direct Purchase</span>
                   </button>
                 </div>
@@ -562,13 +562,13 @@ export default function StripeCheckoutModal({
                   </div>
                 )}
 
-                {/* Trade-in Section */}
+                {/* Trade In Section */}
                 {settings.operations.allowTradeIn && (
                   <div className="space-y-2 pt-2 border-t border-zinc-800">
                     <div className="flex justify-between items-center text-xs">
-                      <span className="text-zinc-300 font-bold">Vehicle Trade-In Credit</span>
+                      <span className="text-zinc-300 font-bold">Vehicle Trade In Credit</span>
                       <span className="text-emerald-400 font-mono font-bold">
-                        {tradeInValue > 0 ? `-${currencySymbol}${tradeInValue.toLocaleString()}` : "None"}
+                        {tradeInValue > 0 ? `Less ${currencySymbol}${tradeInValue.toLocaleString()}` : "None"}
                       </span>
                     </div>
                     <div className="grid grid-cols-2 gap-2">
@@ -601,7 +601,7 @@ export default function StripeCheckoutModal({
                         className="rounded bg-zinc-950 border-zinc-700 text-red-600 focus:ring-0"
                       />
                       <div>
-                        <span className="font-bold text-white block">3-Year Platinum Powertrain Warranty</span>
+                        <span className="font-bold text-white block">3 Year Platinum Powertrain Warranty</span>
                         <span className="text-[10px] text-zinc-400">Complete parts and labor protection worldwide</span>
                       </div>
                     </div>
@@ -618,8 +618,8 @@ export default function StripeCheckoutModal({
                           className="rounded bg-zinc-950 border-zinc-700 text-red-600 focus:ring-0"
                         />
                         <div>
-                          <span className="font-bold text-white block">Enclosed White-Glove Transporter</span>
-                          <span className="text-[10px] text-zinc-400">Climate-controlled direct doorstep delivery</span>
+                          <span className="font-bold text-white block">Enclosed White Glove Transporter</span>
+                          <span className="text-[10px] text-zinc-400">Climate controlled direct doorstep delivery</span>
                         </div>
                       </div>
                       <span className="font-mono text-zinc-300 text-xs">+{currencySymbol}{deliveryFee}</span>

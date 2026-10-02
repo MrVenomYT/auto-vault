@@ -4,25 +4,29 @@ import { StructuredVehicle } from "@/lib/types/vehicle"
 
 // Map of authentic manufacturer transparent PNG cutouts
 const BRAND_TRANSPARENT_IMAGES: Record<string, string> = {
-  porsche: "https://pngimg.com/d/porsche_PNG10613.png",
-  ferrari: "https://pngimg.com/d/ferrari_PNG10665.png",
-  bmw: "https://pngimg.com/d/bmw_PNG99547.png",
-  "mercedes-benz": "https://pngimg.com/d/mercedes_benz_PNG101880.png",
-  mercedes: "https://pngimg.com/d/mercedes_benz_PNG101880.png",
-  audi: "https://pngimg.com/d/audi_PNG99484.png",
-  lamborghini: "https://pngimg.com/d/ferrari_PNG10665.png",
-  mclaren: "https://pngimg.com/d/mercedes_benz_PNG101880.png",
-  bugatti: "https://pngimg.com/d/audi_PNG99484.png",
-  "aston martin": "https://pngimg.com/d/bmw_PNG99547.png",
-  ford: "https://pngimg.com/d/porsche_PNG10613.png",
-  chevrolet: "https://pngimg.com/d/bmw_PNG99547.png",
-  tesla: "https://pngimg.com/d/audi_PNG99484.png",
-  nissan: "https://pngimg.com/d/bmw_PNG99547.png",
-  toyota: "https://pngimg.com/d/porsche_PNG10613.png",
-  dodge: "https://pngimg.com/d/bmw_PNG99547.png",
-  cadillac: "https://pngimg.com/d/mercedes_benz_PNG101880.png",
-  jaguar: "https://pngimg.com/d/bmw_PNG99547.png",
-  default: "https://pngimg.com/d/porsche_PNG10613.png"
+  porsche: "/images/cars/porsche_911_real.png",
+  ferrari: "/images/cars/ferrari_f8_real.png",
+  bmw: "/images/cars/bmw_m4_real.png",
+  "mercedes-benz": "/images/cars/mercedes_amg_real.png",
+  mercedes: "/images/cars/mercedes_amg_real.png",
+  audi: "/images/cars/audi_r8_real.png",
+  lamborghini: "/images/cars/lamborghini_countach_real.png",
+  countach: "/images/cars/lamborghini_countach_real.png",
+  diablo: "/images/cars/lamborghini_diablo_real.png",
+  mclaren: "/images/cars/mclaren_f1_real.png",
+  bugatti: "/images/cars/bugatti_chiron_real.png",
+  "aston martin": "/images/cars/aston_martin_valkyrie_real.png",
+  valkyrie: "/images/cars/aston_martin_valkyrie_real.png",
+  db5: "/images/cars/aston_martin_real.png",
+  ford: "/images/cars/ford_gt_real.png",
+  corvette: "/images/cars/chevrolet_corvette_real.png",
+  chevrolet: "/images/cars/chevrolet_corvette_real.png",
+  tesla: "/images/cars/tesla_model_s_real.png",
+  dodge: "/images/cars/dodge_charger_real.png",
+  charger: "/images/cars/dodge_charger_real.png",
+  duesenberg: "/images/cars/duesenberg_model_j_real.png",
+  benz: "/images/cars/benz_motorwagen_real.png",
+  default: "/images/cars/porsche_911_real.png"
 }
 
 export async function POST(req: NextRequest) {

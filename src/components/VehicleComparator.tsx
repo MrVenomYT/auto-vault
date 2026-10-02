@@ -1,6 +1,6 @@
 "use client"
 
-import Image from "next/image"
+import CarImage from "@/components/CarImage"
 import { StructuredVehicle } from "@/lib/types/vehicle"
 import { X, Zap, Gauge, Globe, ShieldCheck, Key, ShoppingBag } from "lucide-react"
 
@@ -42,12 +42,12 @@ export default function VehicleComparator({
             >
               <div>
                 <div className="relative w-full h-44 my-2">
-                  <Image
+                  <CarImage
                     src={veh.images.primaryImage.url}
                     alt={veh.vehicle.fullName}
                     fill
                     className="object-contain"
-                    referrerPolicy="no-referrer"
+                    fallbackUrls={veh.images?.gallery?.map(g => g.url) || []}
                   />
                 </div>
 

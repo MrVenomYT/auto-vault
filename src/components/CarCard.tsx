@@ -1,7 +1,8 @@
 "use client"
 
 import { useState } from "react"
-import Image from "next/image"
+import Link from "next/link"
+import CarImage from "@/components/CarImage"
 import { StructuredVehicle } from "@/lib/types/vehicle"
 import {
   Gauge,
@@ -27,13 +28,9 @@ export default function CarCard({
   onCompare,
   isComparing = false,
 }: CarCardProps) {
-  const [imageError, setImageError] = useState(false)
   const { settings } = usePlatformSettings()
-
   const currencySymbol = settings.financials.currencySymbol || "$"
-  const imageUrl = imageError
-    ? "/images/cars/porsche_911_real.png"
-    : vehicle.images.primaryImage.url
+  const imageUrl = vehicle.images?.primaryImage?.url || "/images/cars/benz_motorwagen_real.png"
 
   return (
     <div className="group relative bg-gradient-to-b from-zinc-900/95 to-zinc-950/95 rounded-3xl border border-zinc-800/80 hover:border-red-600/60 transition-all duration-300 flex flex-col justify-between overflow-hidden shadow-xl hover:shadow-2xl hover:shadow-red-950/30">
@@ -48,9 +45,11 @@ export default function CarCard({
               {vehicle.vehicle.category}
             </span>
           </div>
-          <h3 className="text-lg font-black text-white mt-2 group-hover:text-red-400 transition-colors tracking-tight">
-            {vehicle.manufacturer.name} {vehicle.vehicle.name}
-          </h3>
+          <Link href={`/vehicles/${vehicle.vehicleId}`} className="block">
+            <h3 className="text-lg font-black text-white mt-2 group-hover:text-red-400 transition-colors tracking-tight">
+              {vehicle.manufacturer.name} {vehicle.vehicle.name}
+            </h3>
+          </Link>
           <p className="text-xs text-zinc-400 font-medium">
             {vehicle.vehicle.generation || vehicle.vehicle.bodyType}
           </p>
@@ -67,22 +66,24 @@ export default function CarCard({
       </div>
 
       {/* Centerpiece Real Vehicle Photograph (Complete Body, Backgroundless) */}
-      <div className="relative w-full h-56 px-4 flex items-center justify-center my-3">
+      <Link
+        href={`/vehicles/${vehicle.vehicleId}`}
+        className="relative w-full h-56 px-4 flex items-center justify-center my-3 block"
+      >
         {/* Floor Glow */}
         <div className="absolute inset-0 bg-gradient-to-t from-red-600/15 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 rounded-full blur-2xl" />
 
         <div className="relative w-full h-full transform group-hover:scale-105 transition-transform duration-500 flex items-center justify-center">
-          <Image
+          <CarImage
             src={imageUrl}
             alt={`${vehicle.manufacturer.name} ${vehicle.vehicle.name}`}
             fill
             className="object-contain drop-shadow-[0_15px_25px_rgba(0,0,0,0.85)]"
-            referrerPolicy="no-referrer"
             sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-            onError={() => setImageError(true)}
+            fallbackUrls={vehicle.images?.gallery?.map(g => g.url) || []}
           />
         </div>
-      </div>
+      </Link>
 
       {/* Specifications Telemetry Grid */}
       <div className="px-5 space-y-3 z-10">

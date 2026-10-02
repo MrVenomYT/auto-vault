@@ -43,10 +43,11 @@ import {
   Phone,
   Mail,
   User,
-  ShoppingBag
+  ShoppingBag,
+  Upload
 } from "lucide-react"
 import { VEHICLES_DB } from "@/lib/db/vehicles"
-import { StructuredVehicle } from "@/lib/types/vehicle"
+import { StructuredVehicle, VehicleImage } from "@/lib/types/vehicle"
 import { usePlatformSettings } from "@/context/PlatformSettingsContext"
 import { PlatformSettings } from "@/lib/types/settings"
 
@@ -75,6 +76,10 @@ export default function DashboardPage() {
   const [editRentalRate, setEditRentalRate] = useState<number>(0)
   const [editAvailableForRental, setEditAvailableForRental] = useState<boolean>(true)
   const [editHp, setEditHp] = useState<number>(0)
+  const [editPrimaryImageUrl, setEditPrimaryImageUrl] = useState<string>("")
+  const [editGallery, setEditGallery] = useState<VehicleImage[]>([])
+  const [newGalleryInputUrl, setNewGalleryInputUrl] = useState<string>("")
+  const [newGalleryCaption, setNewGalleryCaption] = useState<string>("")
   const [isSavingVehicle, setIsSavingVehicle] = useState<boolean>(false)
 
   // Add new vehicle modal
@@ -218,13 +223,101 @@ export default function DashboardPage() {
     setEditRentalRate(veh.rental.dailyRate || 850)
     setEditAvailableForRental(veh.rental.availableForRental)
     setEditHp(veh.specifications.horsepower || 500)
+    setEditPrimaryImageUrl(veh.images?.primaryImage?.url || "")
+    setEditGallery(veh.images?.gallery ? [...veh.images.gallery] : [])
+    setNewGalleryInputUrl("")
+    setNewGalleryCaption("")
+  }
+
+  // Handle image upload from file picker
+  const handleImageFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files
+    if (!files || files.length === 0) return
+
+    Array.from(files).forEach((file) => {
+      const reader = new FileReader()
+      reader.onload = (event) => {
+        const result = event.target?.result as string
+        if (result) {
+          const newImg: VehicleImage = {
+            url: result,
+            format: "PNG",
+            background: "transparent",
+            verified: true,
+            source: "Showroom Upload",
+            caption: file.name.replace(/\.[^/.]+$/, "").replace(/[-_]/g, " ")
+          }
+          setEditGallery((prev) => [...prev, newImg])
+        }
+      }
+      reader.readAsDataURL(file)
+    })
+    e.target.value = ""
+  }
+
+  // Add custom image URL to gallery
+  const handleAddGalleryUrl = () => {
+    if (!newGalleryInputUrl.trim()) return
+    const newImg: VehicleImage = {
+      url: newGalleryInputUrl.trim(),
+      format: "PNG",
+      background: "transparent",
+      verified: true,
+      source: "Manual URL",
+      caption: newGalleryCaption.trim() || "Additional View"
+    }
+    setEditGallery((prev) => [...prev, newImg])
+    setNewGalleryInputUrl("")
+    setNewGalleryCaption("")
+  }
+
+  // Set selected gallery image as primary
+  const handleSetAsPrimaryImage = (index: number) => {
+    const selected = editGallery[index]
+    if (!selected) return
+
+    // Old primary becomes first gallery image
+    const oldPrimary: VehicleImage = {
+      url: editPrimaryImageUrl,
+      format: "PNG",
+      background: "transparent",
+      verified: true,
+      source: "Previous Primary",
+      caption: "Alternative Angle"
+    }
+
+    const updatedGallery = editGallery.filter((_, i) => i !== index)
+    if (editPrimaryImageUrl) {
+      updatedGallery.unshift(oldPrimary)
+    }
+
+    setEditPrimaryImageUrl(selected.url)
+    setEditGallery(updatedGallery)
+  }
+
+  // Remove image from gallery
+  const handleRemoveGalleryImage = (index: number) => {
+    setEditGallery((prev) => prev.filter((_, i) => i !== index))
   }
 
   const handleSaveVehicleEdit = async () => {
     if (!editingVehicle) return
     setIsSavingVehicle(true)
     try {
+      const updatedImages = {
+        primaryImage: {
+          url: editPrimaryImageUrl || editingVehicle.images.primaryImage.url,
+          format: "PNG" as const,
+          background: "transparent" as const,
+          verified: true,
+          source: editingVehicle.images.primaryImage.source || "Manufacturer Media",
+          caption: editingVehicle.images.primaryImage.caption
+        },
+        gallery: editGallery
+      }
+
       const updates = {
+        images: updatedImages,
         metadata: {
           ...editingVehicle.metadata,
           valuationPrice: editPrice,
@@ -264,6 +357,16 @@ export default function DashboardPage() {
           v.vehicleId === editingVehicle.vehicleId
             ? {
                 ...v,
+                images: {
+                  primaryImage: {
+                    url: editPrimaryImageUrl || v.images.primaryImage.url,
+                    format: "PNG" as const,
+                    background: "transparent" as const,
+                    verified: true,
+                    source: "Updated Image",
+                  },
+                  gallery: editGallery
+                },
                 metadata: { ...v.metadata, valuationPrice: editPrice },
                 rental: { ...v.rental, dailyRate: editRentalRate, availableForRental: editAvailableForRental },
                 specifications: { ...v.specifications, horsepower: editHp },
@@ -1269,7 +1372,7 @@ export default function DashboardPage() {
                   </label>
 
                   <label className="flex items-center justify-between p-3.5 bg-zinc-950 border border-zinc-800 rounded-2xl cursor-pointer">
-                    <span className="font-bold text-white">Allow Trade-In Estimator</span>
+                    <span className="font-bold text-white">Allow Trade In Estimator</span>
                     <input
                       type="checkbox"
                       checked={formSettings.operations.allowTradeIn}
@@ -1282,7 +1385,7 @@ export default function DashboardPage() {
                   </label>
 
                   <label className="flex items-center justify-between p-3.5 bg-zinc-950 border border-zinc-800 rounded-2xl cursor-pointer">
-                    <span className="font-bold text-white">Allow White-Glove Transporter</span>
+                    <span className="font-bold text-white">Allow White Glove Transporter</span>
                     <input
                       type="checkbox"
                       checked={formSettings.operations.allowHomeDelivery}
@@ -1470,19 +1573,169 @@ export default function DashboardPage() {
 
       {/* EDIT VEHICLE MODAL */}
       {editingVehicle && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-md">
-          <div className="w-full max-w-lg bg-zinc-900 border border-zinc-800 rounded-3xl p-6 text-white space-y-4">
-            <div className="flex justify-between items-center border-b border-zinc-800 pb-3">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-md overflow-y-auto">
+          <div className="w-full max-w-2xl bg-zinc-900 border border-zinc-800 rounded-3xl p-6 sm:p-8 text-white space-y-5 my-8 max-h-[90vh] overflow-y-auto">
+            <div className="flex justify-between items-center border-b border-zinc-800 pb-4">
               <div>
-                <h3 className="text-base font-black text-white">Edit Fleet Vehicle</h3>
-                <p className="text-xs text-zinc-400">{editingVehicle.vehicle.fullName}</p>
+                <span className="text-[10px] font-mono font-bold text-red-500 uppercase tracking-wider">
+                  Showroom Vehicle Editor
+                </span>
+                <h3 className="text-lg font-black text-white">{editingVehicle.vehicle.fullName}</h3>
+                <p className="text-xs text-zinc-400">{editingVehicle.vehicle.category} | {editingVehicle.vehicle.modelYear}</p>
               </div>
-              <button onClick={() => setEditingVehicle(null)} className="text-zinc-400 hover:text-white text-xs">
-                Cancel
+              <button 
+                onClick={() => setEditingVehicle(null)} 
+                className="text-xs text-zinc-400 hover:text-white bg-zinc-800 hover:bg-zinc-700 px-3 py-1.5 rounded-xl transition-all"
+              >
+                Close
               </button>
             </div>
 
-            <div className="space-y-3 text-xs">
+            {/* Gallery & Image Assets Section */}
+            <div className="space-y-4 bg-zinc-950 p-5 rounded-2xl border border-zinc-800">
+              <div className="flex items-center justify-between border-b border-zinc-850 pb-3">
+                <div>
+                  <h4 className="text-xs font-bold text-white uppercase tracking-wider">Vehicle Photography &amp; Gallery</h4>
+                  <p className="text-[11px] text-zinc-400">Manage transparent primary cutout and multiple gallery views</p>
+                </div>
+                <span className="text-[10px] font-mono font-bold text-zinc-400 bg-zinc-900 px-2.5 py-1 rounded-lg border border-zinc-800">
+                  {1 + editGallery.length} Total Image{(1 + editGallery.length) > 1 ? "s" : ""}
+                </span>
+              </div>
+
+              {/* Primary Image Spotlight */}
+              <div>
+                <label className="block text-[10px] uppercase font-bold text-zinc-400 mb-1.5">
+                  Primary Real Car Cutout Image (Transparent PNG)
+                </label>
+                <div className="flex gap-4 items-center bg-zinc-900/90 p-3.5 rounded-xl border border-zinc-800">
+                  <div className="relative w-24 h-16 bg-zinc-950 rounded-lg p-1.5 border border-zinc-800 shrink-0 flex items-center justify-center overflow-hidden">
+                    {editPrimaryImageUrl ? (
+                      <Image
+                        src={editPrimaryImageUrl}
+                        alt="Primary Preview"
+                        fill
+                        className="object-contain p-1"
+                        referrerPolicy="no-referrer"
+                      />
+                    ) : (
+                      <span className="text-[10px] text-zinc-600">No Image</span>
+                    )}
+                  </div>
+                  <div className="flex-1 space-y-1">
+                    <input
+                      type="text"
+                      value={editPrimaryImageUrl}
+                      onChange={(e) => setEditPrimaryImageUrl(e.target.value)}
+                      placeholder="/images/cars/example.png or image URL"
+                      className="w-full bg-zinc-950 border border-zinc-800 rounded-lg px-3 py-1.5 text-xs text-white placeholder-zinc-600 font-mono"
+                    />
+                    <span className="text-[10px] text-emerald-400 block font-medium">Active main spotlight image in showroom &amp; inventory cards</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Multi-Image Gallery List */}
+              <div className="space-y-3 pt-2">
+                <label className="block text-[10px] uppercase font-bold text-zinc-400">
+                  Additional Gallery Images (Angles, Interior, Rear View)
+                </label>
+
+                {editGallery.length === 0 ? (
+                  <div className="text-center py-5 border border-dashed border-zinc-800 rounded-xl text-zinc-500 text-xs">
+                    No additional gallery images yet. Upload files below or enter image URLs to populate the vehicle detail carousel.
+                  </div>
+                ) : (
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 max-h-56 overflow-y-auto pr-1">
+                    {editGallery.map((img, idx) => (
+                      <div
+                        key={idx}
+                        className="flex items-center gap-3 bg-zinc-900 p-2.5 rounded-xl border border-zinc-800 hover:border-zinc-700 transition-colors"
+                      >
+                        <div className="relative w-16 h-12 bg-zinc-950 rounded-lg p-1 border border-zinc-800 shrink-0 overflow-hidden">
+                          <Image
+                            src={img.url}
+                            alt={img.caption || `Gallery ${idx + 1}`}
+                            fill
+                            className="object-contain p-0.5"
+                            referrerPolicy="no-referrer"
+                          />
+                        </div>
+                        <div className="flex-1 min-w-0 space-y-1">
+                          <p className="text-[11px] font-bold text-zinc-200 truncate">
+                            {img.caption || `View Angle ${idx + 1}`}
+                          </p>
+                          <div className="flex gap-2 text-[10px]">
+                            <button
+                              type="button"
+                              onClick={() => handleSetAsPrimaryImage(idx)}
+                              className="text-red-400 hover:text-red-300 font-bold transition-colors"
+                            >
+                              Make Primary
+                            </button>
+                            <span className="text-zinc-600">|</span>
+                            <button
+                              type="button"
+                              onClick={() => handleRemoveGalleryImage(idx)}
+                              className="text-zinc-500 hover:text-red-400 font-bold transition-colors"
+                            >
+                              Remove
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+
+              {/* Upload & Add New Image Inputs */}
+              <div className="pt-3 border-t border-zinc-850 space-y-3">
+                <div className="flex flex-col sm:flex-row gap-3">
+                  {/* File Upload Button */}
+                  <label className="flex-1 cursor-pointer bg-zinc-900 hover:bg-zinc-850 border border-zinc-800 hover:border-zinc-700 p-3 rounded-xl flex items-center justify-center gap-2 text-xs font-bold text-zinc-300 hover:text-white transition-all">
+                    <Upload className="w-4 h-4 text-red-500" />
+                    <span>Upload Images from Device</span>
+                    <input
+                      type="file"
+                      multiple
+                      accept="image/*"
+                      onChange={handleImageFileUpload}
+                      className="hidden"
+                    />
+                  </label>
+                </div>
+
+                {/* Direct URL Add */}
+                <div className="flex gap-2">
+                  <input
+                    type="text"
+                    value={newGalleryInputUrl}
+                    onChange={(e) => setNewGalleryInputUrl(e.target.value)}
+                    placeholder="Or paste external image URL..."
+                    className="flex-1 bg-zinc-900 border border-zinc-800 rounded-xl px-3 py-2 text-xs text-white placeholder-zinc-600"
+                  />
+                  <input
+                    type="text"
+                    value={newGalleryCaption}
+                    onChange={(e) => setNewGalleryCaption(e.target.value)}
+                    placeholder="Caption (e.g. Side Profile)"
+                    className="w-36 bg-zinc-900 border border-zinc-800 rounded-xl px-3 py-2 text-xs text-white placeholder-zinc-600 hidden sm:block"
+                  />
+                  <button
+                    type="button"
+                    onClick={handleAddGalleryUrl}
+                    disabled={!newGalleryInputUrl.trim()}
+                    className="bg-zinc-800 hover:bg-zinc-700 disabled:opacity-40 text-white text-xs font-bold px-4 py-2 rounded-xl transition-all"
+                  >
+                    Add URL
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            {/* Pricing and Specifications Fields */}
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs">
               <div>
                 <label className="block text-[10px] uppercase font-bold text-zinc-400 mb-1">Purchase Valuation Price ($)</label>
                 <input
@@ -1512,31 +1765,31 @@ export default function DashboardPage() {
                   className="w-full bg-zinc-950 border border-zinc-800 rounded-xl px-3 py-2 text-white font-mono"
                 />
               </div>
-
-              <label className="flex items-center gap-2 pt-2 cursor-pointer">
-                <input
-                  type="checkbox"
-                  checked={editAvailableForRental}
-                  onChange={(e) => setEditAvailableForRental(e.target.checked)}
-                  className="rounded bg-zinc-950 border-zinc-700 text-red-600"
-                />
-                <span className="font-bold text-white">Available for Daily Rental Reservations</span>
-              </label>
             </div>
 
-            <div className="flex justify-end gap-2 pt-3 border-t border-zinc-800">
+            <label className="flex items-center gap-2.5 p-3 bg-zinc-950 rounded-xl border border-zinc-800 cursor-pointer text-xs">
+              <input
+                type="checkbox"
+                checked={editAvailableForRental}
+                onChange={(e) => setEditAvailableForRental(e.target.checked)}
+                className="rounded bg-zinc-900 border-zinc-700 text-red-600 focus:ring-0"
+              />
+              <span className="font-bold text-white">Enable Vehicle for Daily Rental Reservations</span>
+            </label>
+
+            <div className="flex justify-end gap-3 pt-3 border-t border-zinc-800">
               <button
                 onClick={() => setEditingVehicle(null)}
-                className="px-4 py-2 bg-zinc-800 text-zinc-300 rounded-xl text-xs font-bold"
+                className="px-5 py-2.5 bg-zinc-800 hover:bg-zinc-700 text-zinc-300 rounded-xl text-xs font-bold transition-all"
               >
                 Cancel
               </button>
               <button
                 onClick={handleSaveVehicleEdit}
                 disabled={isSavingVehicle}
-                className="px-6 py-2 bg-red-600 hover:bg-red-700 text-white rounded-xl text-xs font-bold"
+                className="px-7 py-2.5 bg-red-600 hover:bg-red-700 text-white rounded-xl text-xs font-bold transition-all shadow-md shadow-red-600/30 flex items-center gap-2"
               >
-                {isSavingVehicle ? "Saving..." : "Save Changes"}
+                {isSavingVehicle ? "Saving Changes..." : "Save All Changes Live"}
               </button>
             </div>
           </div>

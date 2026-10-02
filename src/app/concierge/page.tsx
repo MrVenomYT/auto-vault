@@ -76,7 +76,7 @@ export default function ConciergePage() {
           </h1>
 
           <p className="text-sm sm:text-base text-zinc-400 max-w-2xl font-medium leading-relaxed">
-            From private closed-circuit track test drives to bespoke international vehicle acquisition and climate-controlled transport logistics, our private client desk delivers unmatched automotive luxury.
+            From private closed circuit track test drives to bespoke international vehicle acquisition and climate controlled transport logistics, our private client desk delivers unmatched automotive luxury.
           </p>
         </div>
       </div>
@@ -100,7 +100,7 @@ export default function ConciergePage() {
             </div>
             <h3 className="text-lg font-black text-white">Bespoke Vehicle Sourcing</h3>
             <p className="text-xs text-zinc-400 leading-relaxed">
-              Seeking an ultra-rare historical classic or limited production hypercar? Our global acquisition network sources verified vehicles worldwide.
+              Seeking an ultra rare historical classic or limited production hypercar? Our global acquisition network sources verified vehicles worldwide.
             </p>
           </div>
 
@@ -108,9 +108,9 @@ export default function ConciergePage() {
             <div className="w-10 h-10 rounded-2xl bg-amber-600/20 text-amber-400 flex items-center justify-center font-bold">
               <Truck className="w-5 h-5" />
             </div>
-            <h3 className="text-lg font-black text-white">White-Glove Enclosed Transport</h3>
+            <h3 className="text-lg font-black text-white">White Glove Enclosed Transport</h3>
             <p className="text-xs text-zinc-400 leading-relaxed">
-              Dedicated air freight and climate controlled air-ride transporters to deliver your purchased or rented vehicle to any private destination.
+              Dedicated air freight and climate controlled air ride transporters to deliver your purchased or rented vehicle to any private destination.
             </p>
           </div>
         </div>
@@ -213,7 +213,7 @@ export default function ConciergePage() {
                     required
                     value={phone}
                     onChange={(e) => setPhone(e.target.value)}
-                    placeholder="+1 (555) 789-0123"
+                    placeholder="+1 555 789 0123"
                     className="w-full bg-zinc-950 border border-zinc-800 rounded-xl px-3.5 py-2.5 text-white placeholder-zinc-500 focus:outline-none focus:border-red-600"
                   />
                 </div>

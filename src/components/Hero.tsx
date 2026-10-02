@@ -2,6 +2,7 @@
 
 import { useState, useMemo } from "react"
 import Image from "next/image"
+import CarImage from "@/components/CarImage"
 import {
   ShieldCheck,
   Zap,
@@ -145,6 +146,7 @@ export default function Hero({ onSelectHeroVehicle, featuredVehicles }: HeroProp
                   src={activeCar.images.primaryImage.url}
                   alt={activeCar.vehicle.fullName}
                   fill
+                  unoptimized
                   className="object-contain drop-shadow-[0_25px_35px_rgba(0,0,0,0.95)]"
                   priority
                   referrerPolicy="no-referrer"
@@ -175,6 +177,7 @@ export default function Hero({ onSelectHeroVehicle, featuredVehicles }: HeroProp
                       src={veh.images.primaryImage.url}
                       alt={veh.vehicle.name}
                       fill
+                      unoptimized
                       className="object-contain"
                       referrerPolicy="no-referrer"
                     />

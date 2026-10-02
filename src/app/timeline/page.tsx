@@ -2,7 +2,7 @@
 
 import { useState, useMemo } from "react"
 import Link from "next/link"
-import Image from "next/image"
+import CarImage from "@/components/CarImage"
 import { VEHICLES_DB } from "@/lib/db/vehicles"
 import { StructuredVehicle } from "@/lib/types/vehicle"
 import { usePlatformSettings } from "@/context/PlatformSettingsContext"
@@ -34,26 +34,26 @@ const TIMELINE_ERAS = [
   },
   {
     id: "1920 to 1939 (Classic and Pre War)",
-    title: "1920 to 1939: Pre-War and Art Deco Masterpieces",
+    title: "1920 to 1939: Pre War and Art Deco Masterpieces",
     subtitle: "The golden era of bespoke automotive design",
-    description: "Bugatti Type 57SC, Duesenberg, and Alfa Romeo dominate Grand Prix racing and French concours d'elegance."
+    description: "Bugatti Type 57SC, Duesenberg, and Alfa Romeo dominate Grand Prix racing and French concours d elegance."
   },
   {
     id: "1940 to 1959 (Post War and Early Classic)",
-    title: "1940 to 1959: Post-War Rebirth and Early Classics",
+    title: "1940 to 1959: Post War Rebirth and Early Classics",
     subtitle: "Iconic gullwings, lightweight roadsters, and American tailfins",
     description: "The Mercedes 300 SL Gullwing, Chevrolet Corvette C1, and Ferrari 250 Testa Rossa redefine motorsport elegance."
   },
   {
     id: "1960 to 1979 (Muscle Cars and Golden Age)",
     title: "1960 to 1979: Muscle Cars and the Golden Age",
-    subtitle: "V8 horsepower wars and mid-engine revolutions",
+    subtitle: "V8 horsepower wars and mid engine revolutions",
     description: "Shelby Cobra, Lamborghini Miura, Ford GT40, and Dodge Charger battle for street and Le Mans supremacy."
   },
   {
     id: "1980 to 1999 (Modern Classic and Supercars)",
     title: "1980 to 1999: The Supercar Renaissance",
-    subtitle: "Twin turbos, carbon fiber, and 200+ MPH barrier",
+    subtitle: "Twin turbos, carbon fiber, and 200 plus MPH barrier",
     description: "Ferrari F40, McLaren F1, Porsche 959, and Lamborghini Diablo establish the modern definition of a supercar."
   },
   {
@@ -70,7 +70,7 @@ const TIMELINE_ERAS = [
   },
   {
     id: "2020 to 2026 (Modern and Latest Generation)",
-    title: "2020 to 2026: Next-Gen and Electrified Titans",
+    title: "2020 to 2026: Next Generation and Electrified Titans",
     subtitle: "High output dual clutch turbos, F1 powertrains, and all electric hypercars",
     description: "Porsche 911 Carrera S, Ferrari F8, Aston Martin Valkyrie, and Corvette Z06 lead today's automotive pinnacle."
   }
@@ -195,13 +195,13 @@ export default function TimelinePage() {
                   href={`/vehicles/${vehicle.vehicleId}`}
                   className="relative w-full h-52 px-4 flex items-center justify-center my-3 block"
                 >
-                  <Image
+                  <CarImage
                     src={vehicle.images.primaryImage.url}
                     alt={vehicle.vehicle.fullName}
                     fill
                     className="object-contain drop-shadow-[0_15px_25px_rgba(0,0,0,0.85)] group-hover:scale-105 transition-transform duration-500"
-                    referrerPolicy="no-referrer"
                     sizes="(max-width: 768px) 100vw, 33vw"
+                    fallbackUrls={vehicle.images?.gallery?.map(g => g.url) || []}
                   />
                 </Link>
 

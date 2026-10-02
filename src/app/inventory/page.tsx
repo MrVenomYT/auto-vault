@@ -345,6 +345,7 @@ export default function InventoryPage() {
                       src={vehicle.images.primaryImage.url}
                       alt={vehicle.vehicle.fullName}
                       fill
+                      unoptimized
                       className="object-contain drop-shadow-[0_15px_25px_rgba(0,0,0,0.85)]"
                       referrerPolicy="no-referrer"
                       sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
@@ -436,6 +437,7 @@ export default function InventoryPage() {
                       src={vehicle.images.primaryImage.url}
                       alt={vehicle.vehicle.fullName}
                       fill
+                      unoptimized
                       className="object-contain"
                       referrerPolicy="no-referrer"
                     />

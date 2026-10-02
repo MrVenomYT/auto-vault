@@ -27,7 +27,11 @@ import {
   FileText,
   Clock,
   ChevronRight,
-  Sparkles
+  ChevronLeft,
+  Sparkles,
+  Maximize2,
+  X,
+  Image as ImageIcon
 } from "lucide-react"
 
 export default function VehicleDetailPage({
@@ -45,6 +49,10 @@ export default function VehicleDetailPage({
   const [loading, setLoading] = useState<boolean>(true)
   const [activeTab, setActiveTab] = useState<"overview" | "specs" | "history" | "financing">("overview")
 
+  // Carousel and image inspection state
+  const [activeImageIndex, setActiveImageIndex] = useState<number>(0)
+  const [fullscreenImage, setFullscreenImage] = useState<string | null>(null)
+
   // Checkout modal
   const [showCheckout, setShowCheckout] = useState<boolean>(false)
   const [checkoutType, setCheckoutType] = useState<"rental" | "purchase">("rental")
@@ -57,6 +65,30 @@ export default function VehicleDetailPage({
   const [downPaymentPercent, setDownPaymentPercent] = useState<number>(20)
   const [loanTermMonths, setLoanTermMonths] = useState<number>(60)
   const [interestRate] = useState<number>(5.9)
+
+  // Calculate all available images (primary + gallery)
+  const allImages = useMemo(() => {
+    if (!vehicle) return []
+    const list = [vehicle.images?.primaryImage].filter(Boolean)
+    if (vehicle.images?.gallery && Array.isArray(vehicle.images.gallery)) {
+      vehicle.images.gallery.forEach((g) => {
+        if (g && g.url) list.push(g)
+      })
+    }
+    return list
+  }, [vehicle])
+
+  const currentImage = allImages[activeImageIndex] || vehicle?.images?.primaryImage
+
+  const handleNextImage = () => {
+    if (allImages.length <= 1) return
+    setActiveImageIndex((prev) => (prev + 1) % allImages.length)
+  }
+
+  const handlePrevImage = () => {
+    if (allImages.length <= 1) return
+    setActiveImageIndex((prev) => (prev - 1 + allImages.length) % allImages.length)
+  }
 
   useEffect(() => {
     async function loadData() {
@@ -163,34 +195,109 @@ export default function VehicleDetailPage({
         {/* Main Stage Grid */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-start">
           
-          {/* Left Column: Real Car Showcase (Backgroundless PNG) */}
-          <div className="lg:col-span-7 space-y-6">
-            <div className="relative w-full h-80 sm:h-[420px] bg-gradient-to-b from-zinc-900/90 to-zinc-950/90 border border-zinc-800/80 rounded-3xl p-6 flex items-center justify-center overflow-hidden shadow-2xl">
-              {/* Floor ambient glow */}
-              <div className="absolute inset-0 bg-gradient-to-t from-red-600/10 via-transparent to-transparent pointer-events-none" />
-              <div className="absolute bottom-4 w-3/4 h-8 bg-black/90 blur-xl rounded-full" />
+          {/* Left Column: Real Car Showcase (Interactive Multi-Image Carousel) */}
+          <div className="lg:col-span-7 space-y-4">
+            <div className="relative w-full h-80 sm:h-[440px] bg-gradient-to-b from-zinc-900/90 to-zinc-950/90 border border-zinc-800/80 rounded-3xl p-6 flex items-center justify-center overflow-hidden shadow-2xl group">
+              {/* Floor ambient glow & realistic shadow */}
+              <div className="absolute inset-0 bg-gradient-to-t from-red-600/15 via-transparent to-transparent pointer-events-none" />
+              <div className="absolute bottom-4 w-4/5 h-10 bg-black/95 blur-xl rounded-full" />
 
+              {/* Main Active Image with Smooth Transition */}
               <div className="relative w-full h-full">
                 <Image
-                  src={vehicle.images.primaryImage.url}
-                  alt={vehicle.vehicle.fullName}
+                  key={currentImage?.url || "primary"}
+                  src={currentImage?.url || vehicle.images.primaryImage.url}
+                  alt={currentImage?.caption || vehicle.vehicle.fullName}
                   fill
                   priority
-                  className="object-contain drop-shadow-[0_20px_35px_rgba(0,0,0,0.95)]"
+                  unoptimized
+                  className="object-contain drop-shadow-[0_25px_40px_rgba(0,0,0,0.98)] transition-all duration-300 transform group-hover:scale-[1.02]"
                   referrerPolicy="no-referrer"
                   sizes="(max-width: 1024px) 100vw, 60vw"
                 />
               </div>
 
-              <div className="absolute top-4 left-4 flex gap-2">
-                <span className="text-xs font-mono font-black text-red-400 bg-red-950/80 px-3 py-1 rounded-full border border-red-900/60">
+              {/* Top Badges */}
+              <div className="absolute top-4 left-4 flex items-center gap-2">
+                <span className="text-xs font-mono font-black text-red-400 bg-red-950/90 px-3 py-1 rounded-full border border-red-900/60 shadow-md">
                   {vehicle.vehicle.modelYear}
                 </span>
-                <span className="text-xs font-semibold uppercase text-zinc-300 bg-zinc-900/90 px-3 py-1 rounded-full border border-zinc-800">
+                <span className="text-xs font-semibold uppercase text-zinc-300 bg-zinc-900/90 px-3 py-1 rounded-full border border-zinc-800 shadow-md">
                   {vehicle.vehicle.category}
                 </span>
               </div>
+
+              {/* Top Right Controls (Counter & Zoom) */}
+              <div className="absolute top-4 right-4 flex items-center gap-2">
+                <span className="text-[11px] font-mono font-bold text-zinc-300 bg-zinc-950/80 px-2.5 py-1 rounded-lg border border-zinc-800 shadow">
+                  {activeImageIndex + 1} / {allImages.length}
+                </span>
+                <button
+                  type="button"
+                  onClick={() => setFullscreenImage(currentImage?.url || vehicle.images.primaryImage.url)}
+                  className="p-1.5 bg-zinc-950/80 hover:bg-zinc-800 text-zinc-400 hover:text-white rounded-lg border border-zinc-800 transition-colors shadow"
+                  title="View Fullscreen"
+                >
+                  <Maximize2 className="w-3.5 h-3.5" />
+                </button>
+              </div>
+
+              {/* Carousel Left & Right Navigation Arrows */}
+              {allImages.length > 1 && (
+                <>
+                  <button
+                    type="button"
+                    onClick={handlePrevImage}
+                    aria-label="Previous view angle"
+                    className="absolute left-3 top-1/2 -translate-y-1/2 p-2.5 bg-zinc-950/80 hover:bg-red-600 text-white rounded-full border border-zinc-800 hover:border-red-500 shadow-xl transition-all opacity-80 hover:opacity-100 hover:scale-110"
+                  >
+                    <ChevronLeft className="w-5 h-5" />
+                  </button>
+                  <button
+                    type="button"
+                    onClick={handleNextImage}
+                    aria-label="Next view angle"
+                    className="absolute right-3 top-1/2 -translate-y-1/2 p-2.5 bg-zinc-950/80 hover:bg-red-600 text-white rounded-full border border-zinc-800 hover:border-red-500 shadow-xl transition-all opacity-80 hover:opacity-100 hover:scale-110"
+                  >
+                    <ChevronRight className="w-5 h-5" />
+                  </button>
+                </>
+              )}
+
+              {/* Bottom Caption Pill */}
+              {currentImage?.caption && (
+                <div className="absolute bottom-3 left-1/2 -translate-x-1/2 px-3 py-1 bg-zinc-950/80 border border-zinc-800/80 rounded-full text-[11px] font-medium text-zinc-400">
+                  {currentImage.caption}
+                </div>
+              )}
             </div>
+
+            {/* Interactive Multi-Image Gallery Thumbnail Strip */}
+            {allImages.length > 1 && (
+              <div className="flex items-center gap-3 overflow-x-auto pb-1 pt-0.5 scrollbar-thin">
+                {allImages.map((img, idx) => (
+                  <button
+                    key={idx}
+                    type="button"
+                    onClick={() => setActiveImageIndex(idx)}
+                    className={`relative w-20 h-14 rounded-2xl p-1.5 shrink-0 bg-zinc-950 transition-all overflow-hidden ${
+                      activeImageIndex === idx
+                        ? "border-2 border-red-600 ring-2 ring-red-600/30 shadow-lg shadow-red-600/20"
+                        : "border border-zinc-800 opacity-60 hover:opacity-100 hover:border-zinc-700"
+                    }`}
+                  >
+                    <Image
+                      src={img.url}
+                      alt={img.caption || `Thumbnail ${idx + 1}`}
+                      fill
+                      unoptimized
+                      className="object-contain p-1"
+                      referrerPolicy="no-referrer"
+                    />
+                  </button>
+                ))}
+              </div>
+            )}
 
             {/* Quick Specs Strip */}
             <div className="grid grid-cols-4 gap-3 bg-zinc-900/60 border border-zinc-800/80 p-4 rounded-2xl text-center text-xs">
@@ -288,11 +395,11 @@ export default function VehicleDetailPage({
             <div className="space-y-2 text-xs text-zinc-400">
               <div className="flex items-center gap-2 p-3 bg-zinc-950 rounded-2xl border border-zinc-850">
                 <Truck className="w-4 h-4 text-amber-400 shrink-0" />
-                <span>Enclosed climate-controlled flatbed delivery available to your doorstep.</span>
+                <span>Enclosed climate controlled flatbed delivery available to your doorstep.</span>
               </div>
               <div className="flex items-center gap-2 p-3 bg-zinc-950 rounded-2xl border border-zinc-850">
                 <Award className="w-4 h-4 text-red-500 shrink-0" />
-                <span>Includes 150-point factory certification and complete historical provenance documentation.</span>
+                <span>Includes 150 point factory certification and complete historical provenance documentation.</span>
               </div>
             </div>
           </div>
@@ -504,7 +611,7 @@ export default function VehicleDetailPage({
                     onClick={() => handleOpenCheckout("purchase")}
                     className="w-full bg-red-600 hover:bg-red-700 text-white font-bold py-3 rounded-xl text-xs transition-all shadow-md shadow-red-600/30"
                   >
-                    Apply for Purchase &amp; Pre-Approval
+                    Apply for Purchase &amp; Pre Approval
                   </button>
                 </div>
               </div>
@@ -528,6 +635,7 @@ export default function VehicleDetailPage({
                       src={rel.images.primaryImage.url}
                       alt={rel.vehicle.fullName}
                       fill
+                      unoptimized
                       className="object-contain group-hover:scale-105 transition-transform duration-500"
                       referrerPolicy="no-referrer"
                     />
@@ -552,6 +660,54 @@ export default function VehicleDetailPage({
           bookingType={checkoutType}
           onClose={() => setShowCheckout(false)}
         />
+      )}
+
+      {/* Fullscreen Image Inspection Modal */}
+      {fullscreenImage && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/95 backdrop-blur-lg">
+          <div className="relative w-full max-w-5xl h-[80vh] flex items-center justify-center">
+            <button
+              onClick={() => setFullscreenImage(null)}
+              className="absolute top-4 right-4 z-50 p-2.5 bg-zinc-900/80 hover:bg-zinc-800 text-zinc-300 hover:text-white rounded-full border border-zinc-700 transition-colors"
+            >
+              <X className="w-5 h-5" />
+            </button>
+
+            {allImages.length > 1 && (
+              <>
+                <button
+                  type="button"
+                  onClick={handlePrevImage}
+                  className="absolute left-4 top-1/2 -translate-y-1/2 z-50 p-3 bg-zinc-900/80 hover:bg-red-600 text-white rounded-full border border-zinc-700 transition-all"
+                >
+                  <ChevronLeft className="w-6 h-6" />
+                </button>
+                <button
+                  type="button"
+                  onClick={handleNextImage}
+                  className="absolute right-4 top-1/2 -translate-y-1/2 z-50 p-3 bg-zinc-900/80 hover:bg-red-600 text-white rounded-full border border-zinc-700 transition-all"
+                >
+                  <ChevronRight className="w-6 h-6" />
+                </button>
+              </>
+            )}
+
+            <div className="relative w-full h-full p-8 flex items-center justify-center">
+              <Image
+                src={currentImage?.url || fullscreenImage}
+                alt={vehicle.vehicle.fullName}
+                fill
+                unoptimized
+                className="object-contain drop-shadow-[0_25px_50px_rgba(0,0,0,1)]"
+                referrerPolicy="no-referrer"
+              />
+            </div>
+
+            <div className="absolute bottom-6 left-1/2 -translate-x-1/2 px-4 py-1.5 bg-zinc-900/90 border border-zinc-800 rounded-full text-xs font-medium text-zinc-300">
+              {vehicle.vehicle.fullName} {currentImage?.caption ? `(${currentImage.caption})` : ""} | {activeImageIndex + 1} of {allImages.length}
+            </div>
+          </div>
+        </div>
       )}
     </div>
   )
