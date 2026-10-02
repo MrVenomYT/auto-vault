@@ -16,6 +16,7 @@ import {
   SourceType
 } from "@/lib/types/imageService"
 import { VEHICLES_DB } from "@/lib/db/vehicles"
+import { AuditLogService } from "@/lib/security/auth"
 
 export function isFailureRetryable(state: VerificationFailureState): boolean {
   switch (state) {
@@ -320,6 +321,22 @@ export class HardGateVerificationService {
       }
     } else {
       finalDecision = "UNAVAILABLE"
+    }
+
+    // Automatically record failures to append-only audit trail
+    if (failures.length > 0) {
+      failures.forEach((fail) => {
+        AuditLogService.log({
+          actorType: "SERVICE",
+          actorId: "hard_gate_pipeline",
+          tenantId: "tenant_default",
+          action: "IMAGE_REJECTED",
+          resourceType: "VEHICLE_IMAGE",
+          resourceId: candidate.url ? candidate.url.slice(0, 60) : "unknown_candidate",
+          requestId: `req_${Date.now()}`,
+          failure: fail
+        })
+      })
     }
 
     const makeRes: MatchResult = match.makeMatch ? "MATCH" : "MISMATCH"

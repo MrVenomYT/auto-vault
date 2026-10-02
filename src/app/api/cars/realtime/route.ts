@@ -2,6 +2,8 @@ import { NextRequest, NextResponse } from "next/server"
 import { ai } from "@/lib/gemini"
 import { StructuredVehicle } from "@/lib/types/vehicle"
 
+export const dynamic = "force-dynamic"
+
 // Map of authentic manufacturer transparent PNG cutouts
 const BRAND_TRANSPARENT_IMAGES: Record<string, string> = {
   porsche: "/images/cars/porsche_911_real.png",

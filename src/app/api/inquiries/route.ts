@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from "next/server"
 import { getAllInquiries, insertInquiry } from "@/lib/mongodb"
 
+export const dynamic = "force-dynamic"
+
 export async function GET() {
   const inquiries = await getAllInquiries()
   return NextResponse.json({ total: inquiries.length, inquiries })

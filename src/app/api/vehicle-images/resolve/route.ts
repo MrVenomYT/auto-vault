@@ -2,6 +2,8 @@ import { NextRequest, NextResponse } from "next/server"
 import { getAuthContext, AuditLogService } from "@/lib/security/auth"
 import { VehicleImageService } from "@/lib/services/vehicleImageService"
 
+export const dynamic = "force-dynamic"
+
 export async function POST(req: NextRequest) {
   try {
     const auth = getAuthContext(req)

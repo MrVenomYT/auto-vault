@@ -1,6 +1,8 @@
 import { NextResponse } from "next/server"
 import { getAllVehicles, getAllBookings, getDatabase } from "@/lib/mongodb"
 
+export const dynamic = "force-dynamic"
+
 export async function GET() {
   const [vehicles, bookings, db] = await Promise.all([
     getAllVehicles(),

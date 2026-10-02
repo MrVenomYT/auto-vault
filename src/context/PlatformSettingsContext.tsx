@@ -3,14 +3,14 @@
 import React, { createContext, useContext, useState, useEffect } from "react"
 import { PlatformSettings, DEFAULT_SETTINGS } from "@/lib/types/settings"
 
-interface SettingsContextType {
+export interface SettingsContextType {
   settings: PlatformSettings
   loading: boolean
   refreshSettings: () => Promise<void>
   updateSettings: (newSettings: Partial<PlatformSettings>) => Promise<boolean>
 }
 
-const PlatformSettingsContext = createContext<SettingsContextType>({
+export const PlatformSettingsContext = createContext<SettingsContextType>({
   settings: DEFAULT_SETTINGS,
   loading: false,
   refreshSettings: async () => {},
@@ -19,7 +19,7 @@ const PlatformSettingsContext = createContext<SettingsContextType>({
 
 export function PlatformSettingsProvider({ children }: { children: React.ReactNode }) {
   const [settings, setSettings] = useState<PlatformSettings>(DEFAULT_SETTINGS)
-  const [loading, setLoading] = useState<boolean>(true)
+  const [loading, setLoading] = useState<boolean>(false)
 
   const refreshSettings = async () => {
     try {
@@ -31,7 +31,7 @@ export function PlatformSettingsProvider({ children }: { children: React.ReactNo
         }
       }
     } catch (e) {
-      // Fallback to local default
+      // Fallback
     } finally {
       setLoading(false)
     }
@@ -59,8 +59,7 @@ export function PlatformSettingsProvider({ children }: { children: React.ReactNo
 
   useEffect(() => {
     refreshSettings()
-    // Poll settings every 5 seconds for live realtime updates across tabs
-    const interval = setInterval(refreshSettings, 5000)
+    const interval = setInterval(refreshSettings, 6000)
     return () => clearInterval(interval)
   }, [])
 
@@ -71,6 +70,15 @@ export function PlatformSettingsProvider({ children }: { children: React.ReactNo
   )
 }
 
-export function usePlatformSettings() {
-  return useContext(PlatformSettingsContext)
+export function usePlatformSettings(): SettingsContextType {
+  const context = useContext(PlatformSettingsContext)
+  if (!context) {
+    return {
+      settings: DEFAULT_SETTINGS,
+      loading: false,
+      refreshSettings: async () => {},
+      updateSettings: async () => false,
+    }
+  }
+  return context
 }

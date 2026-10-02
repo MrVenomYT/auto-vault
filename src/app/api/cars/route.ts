@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from "next/server"
 import { getAllVehicles } from "@/lib/mongodb"
 
+export const dynamic = "force-dynamic"
+
 export async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url)
   const query = searchParams.get("query")?.toLowerCase().trim() || ""
