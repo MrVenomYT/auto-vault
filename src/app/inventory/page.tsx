@@ -3,6 +3,7 @@
 import { useState, useMemo, useEffect } from "react"
 import Link from "next/link"
 import Image from "next/image"
+import CarImage from "@/components/CarImage"
 import { VEHICLES_DB } from "@/lib/db/vehicles"
 import { StructuredVehicle } from "@/lib/types/vehicle"
 import { usePlatformSettings } from "@/context/PlatformSettingsContext"
@@ -341,14 +342,13 @@ export default function InventoryPage() {
                   className="relative w-full h-56 px-4 flex items-center justify-center my-3 block"
                 >
                   <div className="relative w-full h-full transform group-hover:scale-105 transition-transform duration-500 flex items-center justify-center">
-                    <Image
+                    <CarImage
                       src={vehicle.images.primaryImage.url}
                       alt={vehicle.vehicle.fullName}
                       fill
-                      unoptimized
                       className="object-contain drop-shadow-[0_15px_25px_rgba(0,0,0,0.85)]"
-                      referrerPolicy="no-referrer"
                       sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                      fallbackUrls={vehicle.images?.gallery?.map(g => g.url) || []}
                     />
                   </div>
                 </Link>
@@ -433,13 +433,13 @@ export default function InventoryPage() {
               >
                 <div className="flex items-center gap-6 w-full md:w-auto">
                   <div className="relative w-36 h-20 bg-zinc-950 rounded-2xl p-2 border border-zinc-800 shrink-0">
-                    <Image
+                    <CarImage
                       src={vehicle.images.primaryImage.url}
                       alt={vehicle.vehicle.fullName}
                       fill
-                      unoptimized
                       className="object-contain"
-                      referrerPolicy="no-referrer"
+                      sizes="150px"
+                      fallbackUrls={vehicle.images?.gallery?.map(g => g.url) || []}
                     />
                   </div>
 

@@ -201,13 +201,28 @@ export async function getAllVehicles() {
       const count = await collection.countDocuments()
       if (count === 0) {
         await collection.insertMany(VEHICLES_DB as any)
+        return VEHICLES_DB
       }
-      return await collection.find({}).toArray()
+      const docs = await collection.find({}).toArray()
+      // Filter out any stale legacy documents that do not exist in VEHICLES_DB and ensure real images
+      const validDocs = docs.filter((doc: any) => VEHICLES_DB.some((v) => v.vehicleId === doc.vehicleId))
+      if (validDocs.length === 0) {
+        await collection.deleteMany({})
+        await collection.insertMany(VEHICLES_DB as any)
+        return VEHICLES_DB
+      }
+      return validDocs.map((doc: any) => {
+        const canonical = VEHICLES_DB.find((v) => v.vehicleId === doc.vehicleId)
+        if (canonical && (!doc.images?.primaryImage?.url || doc.images.primaryImage.url.endsWith(".svg"))) {
+          doc.images = canonical.images
+        }
+        return doc
+      })
     } catch (e) {
-      return inMemoryVehicles
+      return VEHICLES_DB
     }
   }
-  return inMemoryVehicles
+  return VEHICLES_DB
 }
 
 export async function insertVehicle(vehicle: any) {

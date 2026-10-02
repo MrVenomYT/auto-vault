@@ -160,43 +160,40 @@ export class VehicleMatchingService {
 }
 
 /**
- * Multi-dimensional Vehicle Image Validator
+ * Hard-Gate Verification Service
+ * Requires PASS results from Authenticity, Identity, Source, Quality, and Policy gates
+ * before setting finalDecision to VERIFIED.
  */
-export class VehicleImageValidator {
-  static async validate(
+export class HardGateVerificationService {
+  static async evaluateGates(
     vehicle: VehicleIdentity,
     candidate: ImageCandidate
-  ): Promise<ImageValidationResult> {
-    const reasons: string[] = []
-    const warnings: string[] = []
+  ): Promise<{
+    authenticityGate: "PASS" | "FAIL"
+    identityGate: "PASS" | "FAIL"
+    sourceGate: "PASS" | "FAIL"
+    qualityGate: "PASS" | "FAIL"
+    policyGate: "PASS" | "FAIL"
+    failures: VerificationFailure[]
+    reasons: string[]
+    confidenceScore: number
+    assessment: VerificationAssessment
+    finalDecision: "VERIFIED" | "REPRESENTATIVE" | "UNAVAILABLE"
+  }> {
     const failures: VerificationFailure[] = []
+    const reasons: string[] = []
 
-    // 1. Technical Assessment (Local file check / URL check)
-    const technicalPassed = Boolean(candidate.url && (candidate.url.startsWith("/") || candidate.url.startsWith("https://")))
-    if (!technicalPassed) {
-      const fail: VerificationFailure = {
-        code: "TECHNICAL.DECODE_FAILED",
-        state: "IMAGE_FORMAT_INVALID",
-        severity: "FATAL",
-        message: "Invalid image URL or unsupported protocol.",
-        reasons: ["Image URL is missing or malformed."],
-        retryable: false,
-        requiresManualReview: false,
-        timestamp: new Date().toISOString()
-      }
-      failures.push(fail)
-    }
-
-    // 2. Authenticity Assessment
+    // 1. Authenticity Gate
     const auth = await ImageAuthenticityService.classify(candidate)
     const isAuthentic = auth.type === "REAL_PHOTO"
+    let authenticityGate: "PASS" | "FAIL" = isAuthentic ? "PASS" : "FAIL"
     if (!isAuthentic) {
       const fail: VerificationFailure = {
         code: `IMAGE.AUTHENTICITY.${auth.type}`,
         state: auth.type === "AI_GENERATED" ? "AI_GENERATED" : "NOT_A_REAL_PHOTO",
         severity: "FATAL",
-        message: `Synthetic image detected: ${auth.type}. Only authentic photographs are accepted.`,
-        reasons: [`Candidate classified as ${auth.type}`],
+        message: `Synthetic image detected: ${auth.type}. Only authentic real photographs are permitted.`,
+        reasons: [`Candidate classified as synthetic ${auth.type}`],
         retryable: false,
         requiresManualReview: false,
         timestamp: new Date().toISOString()
@@ -205,16 +202,11 @@ export class VehicleImageValidator {
       reasons.push(fail.message)
     }
 
-    // 3. Identity Assessment
+    // 2. Identity Gate
     const match = await VehicleMatchingService.match(vehicle, candidate)
-    const makeRes: MatchResult = match.makeMatch ? "MATCH" : "MISMATCH"
-    const modelRes: MatchResult = match.modelMatch ? "MATCH" : "MISMATCH"
-    const genRes: MatchResult = match.generationMatch === true ? "MATCH" : match.generationMatch === false ? "MISMATCH" : "UNKNOWN"
-    const yearRes: MatchResult = match.yearMatch === true ? "MATCH" : match.yearMatch === false ? "MISMATCH" : "UNKNOWN"
-    const bodyRes: MatchResult = match.bodyStyleMatch === true ? "MATCH" : match.bodyStyleMatch === false ? "MISMATCH" : "UNKNOWN"
-    const trimRes: MatchResult = match.trimMatch === true ? "MATCH" : match.trimMatch === false ? "MISMATCH" : "NOT_APPLICABLE"
-
+    let identityGate: "PASS" | "FAIL" = "PASS"
     if (!match.makeMatch) {
+      identityGate = "FAIL"
       failures.push({
         code: "VEHICLE.MAKE.MISMATCH",
         state: "WRONG_MAKE",
@@ -227,8 +219,8 @@ export class VehicleImageValidator {
       })
       reasons.push(`Make mismatch: expected ${vehicle.make}`)
     }
-
     if (!match.modelMatch) {
+      identityGate = "FAIL"
       failures.push({
         code: "VEHICLE.MODEL.MISMATCH",
         state: "WRONG_MODEL",
@@ -241,8 +233,8 @@ export class VehicleImageValidator {
       })
       reasons.push(`Model mismatch: expected ${vehicle.model}`)
     }
-
     if (match.generationMatch === false) {
+      identityGate = "FAIL"
       failures.push({
         code: "VEHICLE.GENERATION.MISMATCH",
         state: "WRONG_GENERATION",
@@ -255,8 +247,8 @@ export class VehicleImageValidator {
       })
       reasons.push(`Generation mismatch: expected ${vehicle.generation}`)
     }
-
     if (match.bodyStyleMatch === false) {
+      identityGate = "FAIL"
       failures.push({
         code: "VEHICLE.BODY_STYLE.MISMATCH",
         state: "WRONG_BODY_STYLE",
@@ -270,9 +262,72 @@ export class VehicleImageValidator {
       reasons.push(`Body style mismatch: expected ${vehicle.bodyStyle}`)
     }
 
-    const overallIdentity = (match.makeMatch && match.modelMatch && match.generationMatch !== false && match.bodyStyleMatch !== false) ? "PASS" : "FAIL"
-    const confidenceScore = failures.length === 0 ? match.confidenceScore : 0
-    const accepted = failures.length === 0 && confidenceScore >= 80
+    // 3. Source Gate
+    const isSourceTrusted = candidate.sourceType !== "UNTRUSTED" && candidate.sourceType !== "BLOCKED"
+    let sourceGate: "PASS" | "FAIL" = isSourceTrusted ? "PASS" : "FAIL"
+    if (!isSourceTrusted) {
+      failures.push({
+        code: "SOURCE.UNTRUSTED",
+        state: "SOURCE_UNTRUSTED",
+        severity: "FATAL",
+        message: "Untrusted or blocked image source.",
+        reasons: ["Image source failed trust verification policy."],
+        retryable: false,
+        requiresManualReview: false,
+        timestamp: new Date().toISOString()
+      })
+      reasons.push("Untrusted image source rejected.")
+    }
+
+    // 4. Quality Gate
+    const isQualityAcceptable = Boolean(candidate.url && (candidate.url.startsWith("/") || candidate.url.startsWith("https://")))
+    let qualityGate: "PASS" | "FAIL" = isQualityAcceptable ? "PASS" : "FAIL"
+    if (!isQualityAcceptable) {
+      failures.push({
+        code: "IMAGE.QUALITY.LOW_RESOLUTION",
+        state: "IMAGE_LOW_QUALITY",
+        severity: "BLOCKING",
+        message: "Image quality or URL format invalid.",
+        reasons: ["Image URL is corrupted or inaccessible."],
+        retryable: false,
+        requiresManualReview: false,
+        timestamp: new Date().toISOString()
+      })
+      reasons.push("Image quality check failed.")
+    }
+
+    // 5. Policy Gate
+    const isPolicyAllowed = failures.length === 0
+    let policyGate: "PASS" | "FAIL" = isPolicyAllowed ? "PASS" : "FAIL"
+
+    // Hard-gate resolution: ALL 5 GATES MUST PASS
+    const allGatesPassed = authenticityGate === "PASS" &&
+                           identityGate === "PASS" &&
+                           sourceGate === "PASS" &&
+                           qualityGate === "PASS" &&
+                           policyGate === "PASS"
+
+    const confidenceScore = allGatesPassed ? match.confidenceScore : 0
+    let finalDecision: "VERIFIED" | "REPRESENTATIVE" | "UNAVAILABLE" = "UNAVAILABLE"
+
+    if (allGatesPassed) {
+      if (match.yearMatch !== false && confidenceScore >= 90) {
+        finalDecision = "VERIFIED"
+      } else if (confidenceScore >= 80) {
+        finalDecision = "REPRESENTATIVE"
+      } else {
+        finalDecision = "UNAVAILABLE"
+      }
+    } else {
+      finalDecision = "UNAVAILABLE"
+    }
+
+    const makeRes: MatchResult = match.makeMatch ? "MATCH" : "MISMATCH"
+    const modelRes: MatchResult = match.modelMatch ? "MATCH" : "MISMATCH"
+    const genRes: MatchResult = match.generationMatch === true ? "MATCH" : match.generationMatch === false ? "MISMATCH" : "UNKNOWN"
+    const yearRes: MatchResult = match.yearMatch === true ? "MATCH" : match.yearMatch === false ? "MISMATCH" : "UNKNOWN"
+    const bodyRes: MatchResult = match.bodyStyleMatch === true ? "MATCH" : match.bodyStyleMatch === false ? "MISMATCH" : "UNKNOWN"
+    const trimRes: MatchResult = match.trimMatch === true ? "MATCH" : match.trimMatch === false ? "MISMATCH" : "NOT_APPLICABLE"
 
     const assessment: VerificationAssessment = {
       identity: {
@@ -283,7 +338,7 @@ export class VehicleImageValidator {
         facelift: "MATCH",
         bodyStyle: bodyRes,
         trim: trimRes,
-        overallIdentity
+        overallIdentity: identityGate
       },
       authenticity: {
         decision: isAuthentic ? "AUTHENTIC_PHOTO" : "SYNTHETIC",
@@ -294,7 +349,7 @@ export class VehicleImageValidator {
         sourceType: candidate.sourceType || "MANUFACTURER",
         domain: "autovault.internal",
         reputationScore: 98,
-        sourceStatus: "TRUSTED",
+        sourceStatus: isSourceTrusted ? "TRUSTED" : "UNTRUSTED",
         licensingStatus: "ALLOWED"
       },
       quality: {
@@ -302,41 +357,64 @@ export class VehicleImageValidator {
         sharpness: 95,
         brightness: 90,
         visibility: 100,
-        overall: "PASS"
+        overall: qualityGate
       },
       technical: {
-        passed: technicalPassed,
+        passed: isQualityAcceptable,
         failures: []
       },
       policy: {
-        policyAllowed: failures.length === 0,
+        policyAllowed: policyGate === "PASS",
         reasons
       },
       confidence: {
         score: confidenceScore,
-        thresholdPassed: accepted
+        thresholdPassed: allGatesPassed
       },
       failures,
       warnings: [],
-      finalDecision: accepted ? (match.yearMatch === false ? "REPRESENTATIVE" : "VERIFIED") : "UNAVAILABLE"
+      finalDecision
     }
 
     return {
-      accepted,
-      imageType: isAuthentic ? "REAL_PHOTO" : auth.type,
-      confidenceScore,
-      vehicleMatch: {
-        make: match.makeMatch,
-        model: match.modelMatch,
-        year: match.yearMatch,
-        generation: match.generationMatch,
-        bodyStyle: match.bodyStyleMatch,
-        trim: match.trimMatch
-      },
-      assessment,
-      failure: failures[0],
+      authenticityGate,
+      identityGate,
+      sourceGate,
+      qualityGate,
+      policyGate,
+      failures,
       reasons,
-      warnings
+      confidenceScore,
+      assessment,
+      finalDecision
+    }
+  }
+}
+
+export class VehicleImageValidator {
+  static async validate(
+    vehicle: VehicleIdentity,
+    candidate: ImageCandidate
+  ): Promise<ImageValidationResult> {
+    const gateEval = await HardGateVerificationService.evaluateGates(vehicle, candidate)
+    const accepted = gateEval.finalDecision === "VERIFIED" || gateEval.finalDecision === "REPRESENTATIVE"
+
+    return {
+      accepted,
+      imageType: gateEval.assessment.authenticity.isSynthetic ? "AI_GENERATED" : "REAL_PHOTO",
+      confidenceScore: gateEval.confidenceScore,
+      vehicleMatch: {
+        make: gateEval.assessment.identity.make === "MATCH",
+        model: gateEval.assessment.identity.model === "MATCH",
+        year: gateEval.assessment.identity.year === "MATCH",
+        generation: gateEval.assessment.identity.generation === "MATCH",
+        bodyStyle: gateEval.assessment.identity.bodyStyle === "MATCH",
+        trim: gateEval.assessment.identity.trim === "MATCH"
+      },
+      assessment: gateEval.assessment,
+      failure: gateEval.failures[0],
+      reasons: gateEval.reasons,
+      warnings: []
     }
   }
 }
@@ -436,7 +514,7 @@ export class VehicleImageService {
       }
     }
 
-    // 3. Validate candidate
+    // 3. Validate candidate through Hard-Gate Pipeline
     const candidate: ImageCandidate = {
       url: candidateUrl,
       sourceType: "MANUFACTURER",

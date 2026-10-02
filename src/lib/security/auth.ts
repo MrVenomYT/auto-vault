@@ -1,4 +1,5 @@
 import { NextRequest } from "next/server"
+import { VerificationFailure } from "@/lib/types/imageService"
 
 export type UserRole =
   | "USER"
@@ -33,6 +34,7 @@ export interface AuditEvent {
   resourceId: string
   previousState?: unknown
   newState?: unknown
+  failure?: VerificationFailure
   requestId: string
   timestamp: string
 }
@@ -55,11 +57,25 @@ export class AuditLogService {
     return record
   }
 
-  static getLogs(tenantId?: string, limit = 50): AuditEvent[] {
+  static getLogs(tenantId?: string, limit = 50, actionFilter?: string): AuditEvent[] {
+    let logs = tenantId 
+      ? auditLogs.filter(l => !l.tenantId || l.tenantId === tenantId) 
+      : auditLogs
+    if (actionFilter) {
+      logs = logs.filter(l => l.action === actionFilter)
+    }
+    return logs.slice(-limit).reverse()
+  }
+
+  static getFailures(tenantId?: string, limit = 50): VerificationFailure[] {
     const logs = tenantId 
       ? auditLogs.filter(l => !l.tenantId || l.tenantId === tenantId) 
       : auditLogs
-    return logs.slice(-limit).reverse()
+    return logs
+      .filter(l => l.failure !== undefined)
+      .map(l => l.failure!)
+      .slice(-limit)
+      .reverse()
   }
 }
 

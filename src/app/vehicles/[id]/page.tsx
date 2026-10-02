@@ -1,9 +1,9 @@
 "use client"
 
-import { useState, useEffect, useMemo, use } from "react"
+import { useState, useEffect, useMemo } from "react"
 import Link from "next/link"
 import Image from "next/image"
-import { notFound } from "next/navigation"
+import { notFound, useParams } from "next/navigation"
 import { VEHICLES_DB } from "@/lib/db/vehicles"
 import { StructuredVehicle } from "@/lib/types/vehicle"
 import { usePlatformSettings } from "@/context/PlatformSettingsContext"
@@ -34,13 +34,9 @@ import {
   Image as ImageIcon
 } from "lucide-react"
 
-export default function VehicleDetailPage({
-  params,
-}: {
-  params: Promise<{ id: string }>
-}) {
-  const resolvedParams = use(params)
-  const vehicleId = resolvedParams.id
+export default function VehicleDetailPage() {
+  const routeParams = useParams()
+  const vehicleId = (routeParams?.id as string) || ""
   const { settings } = usePlatformSettings()
   const currencySymbol = settings.financials.currencySymbol || "$"
 
