@@ -7,12 +7,6 @@
 
 A modular open-source TypeScript ecosystem designed for full-stack distributed workflows, cloud runtime orchestrations, and high-performance data pipeline management.
 
-## 📸 System Topology & Architecture Preview
-
-> *Overview of the distributed core runtime architecture and modular worker pools.*
-
-![System Architecture Screenshot](https://raw.githubusercontent.com/developer-core/workspace-toolkit/main/public/images/github-banner-preview.png)
-
 ---
 
 ## 🚀 Architectural Highlights
