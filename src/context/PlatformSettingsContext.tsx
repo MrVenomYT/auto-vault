@@ -71,8 +71,18 @@ export function PlatformSettingsProvider({ children }: { children: React.ReactNo
 }
 
 export function usePlatformSettings(): SettingsContextType {
-  const context = useContext(PlatformSettingsContext)
-  if (!context) {
+  try {
+    const context = useContext(PlatformSettingsContext)
+    if (!context) {
+      return {
+        settings: DEFAULT_SETTINGS,
+        loading: false,
+        refreshSettings: async () => {},
+        updateSettings: async () => false,
+      }
+    }
+    return context
+  } catch (e) {
     return {
       settings: DEFAULT_SETTINGS,
       loading: false,
@@ -80,5 +90,4 @@ export function usePlatformSettings(): SettingsContextType {
       updateSettings: async () => false,
     }
   }
-  return context
 }
